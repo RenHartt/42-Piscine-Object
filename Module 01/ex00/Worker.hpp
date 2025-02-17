@@ -2,6 +2,7 @@
 
 #include "Tool.hpp"
 #include "Logger.hpp"
+#include "Workshop.hpp"
 #include <set>
 
 class Workshop;
@@ -18,24 +19,17 @@ struct Statistic {
 
 class Worker {
     public:
-        Worker(): position(0, 0), statistic(1, 0) {}
+        Worker(): position(0, 0), statistic(1, 0) { LOG_VERBOSE("* Worker created *"); }
 
-        void addTool(Tool* tool) { if (tool) this->tools.insert(tool); }
-        void removeTool(Tool* tool) { if (tool) this->tools.erase(tool); }
-        void giveTool(Worker* worker, Tool* tool) {
-            if (!worker || !tool || worker == this) return;
+        void addTool(Tool* tool);
+        void removeTool(Tool* tool);
+        void giveTool(Worker& worker, Tool* tool);
 
-            if (this->tools.find(tool) != this->tools.end()) {
-                this->removeTool(tool);
-                worker->addTool(tool);
-                LOG_VERBOSE("Tool has been transferred to another worker!");
-            } else {
-                LOG_VERBOSE("Error: Worker does not own this tool!");
-            }
-        }
-
-        void submitApplication(const Workshop& workshop);
+        void joinWorkShop(Workshop& workshop);
+        void leaveWorkShop(Workshop& workshop);
         
+        void work();
+
     private:
         Position position;
         Statistic statistic;

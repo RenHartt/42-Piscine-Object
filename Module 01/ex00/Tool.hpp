@@ -4,18 +4,12 @@
 
 class Tool {
     public:
-        Tool(int numberOfUses): numberOfUses(numberOfUses) {}
+        Tool(int numberOfUses): numberOfUses(numberOfUses) { LOG_VERBOSE("* Tool created *"); }
 
         virtual void use() = 0;
     
     protected :
-        void decreaseDurability() {
-            if (numberOfUses > 0) {
-                numberOfUses--;
-            } else {
-                LOG_VERBOSE("* The tool has broken *");
-            }
-        }
+        void decreaseDurability();
     
     private:
         int numberOfUses;
@@ -23,14 +17,14 @@ class Tool {
 
 class Hammer : public Tool {
     public:
-        Hammer(int numberOfUses): Tool(numberOfUses) {}
+        Hammer(int numberOfUses): Tool(numberOfUses) { LOG_VERBOSE("* Hammer created *"); }
 
-        void use() { decreaseDurability(); }
+        void use();
 };
 
 class Shovel : public Tool {
     public:
-        Shovel(int numberOfUses): Tool(numberOfUses) {}
+        Shovel(int numberOfUses): Tool(numberOfUses) { LOG_VERBOSE("* Shovel created *"); }
 
-        void use() { decreaseDurability(); }
+        void use();
 };
