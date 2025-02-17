@@ -1,5 +1,14 @@
 #include "Worker.hpp"
 
+template<typename ToolType>
+ToolType* Worker::GetTool() {
+    for (std::set<Tool*>::iterator it = tools.begin(); it != tools.end(); ++it) {
+        ToolType* tool = dynamic_cast<ToolType*>(*it);
+        if (tool) return tool;
+    }
+    return nullptr;
+}
+
 void Worker::addTool(Tool* tool) {
     if (tool) {
         this->tools.insert(tool);
@@ -28,6 +37,7 @@ void Worker::giveTool(Worker& worker, Tool* tool) {
 
 void Worker::joinWorkShop(Workshop& workshop) {
     workshop.reviewApplication(*this);
+    this->workshops.insert(&workshop);
     LOG_VERBOSE("* Worker join workshop *");
 }
 
