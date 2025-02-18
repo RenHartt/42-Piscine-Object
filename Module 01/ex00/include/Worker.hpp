@@ -2,10 +2,8 @@
 
 #include "Tool.hpp"
 #include "Logger.hpp"
-#include "Workshop.hpp"
+#include "IWorkshop.hpp"
 #include <set>
-
-class Workshop;
 
 struct Position {
     Position(int x, int y): x(x), y(y) {}
@@ -24,18 +22,23 @@ class Worker {
         template<typename ToolType>
         ToolType* GetTool();
 
+        bool hasTool(const std::type_info& type) const;
+
         void addTool(Tool* tool);
         void removeTool(Tool* tool);
         void giveTool(Worker& worker, Tool* tool);
 
-        void joinWorkShop(Workshop& workshop);
-        void leaveWorkShop(Workshop& workshop);
+        void joinWorkShop(IWorkshop& workshop);
+        void leaveWorkShop(IWorkshop& workshop);
         
+        template<typename ToolType>
         void work();
 
     private:
         Position position;
         Statistic statistic;
         std::set<Tool*> tools;
-        std::set<Workshop*> workshops;
+        std::set<IWorkshop*> workshops;
 };
+
+#include "Worker.tpp"

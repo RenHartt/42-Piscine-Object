@@ -1,12 +1,15 @@
 #include "Worker.hpp"
+#include <iterator>
+#include <typeinfo>
 
-template<typename ToolType>
-ToolType* Worker::GetTool() {
+bool Worker::hasTool(const std::type_info& type) const {
     for (std::set<Tool*>::iterator it = tools.begin(); it != tools.end(); ++it) {
-        ToolType* tool = dynamic_cast<ToolType*>(*it);
-        if (tool) return tool;
+        Tool* tool = *it;
+        if (tool && typeid(*tool) == type) {
+            return true;
+        }
     }
-    return nullptr;
+    return false;
 }
 
 void Worker::addTool(Tool* tool) {
@@ -35,18 +38,12 @@ void Worker::giveTool(Worker& worker, Tool* tool) {
     }
 }
 
-void Worker::joinWorkShop(Workshop& workshop) {
+void Worker::joinWorkShop(IWorkshop& workshop) {  
+    workshops.insert(&workshop);
     workshop.reviewApplication(*this);
-    this->workshops.insert(&workshop);
-    LOG_VERBOSE("* Worker join workshop *");
 }
 
-void Worker::leaveWorkShop(Workshop& workshop) {
-    workshop.deleteWorker(*this);
-    this->workshops.erase(&workshop);
-    LOG_VERBOSE("* Worker leave workshop *");
-}
-
-void Worker::work() {
-    LOG_VERBOSE("* Worker doing work *");
+void Worker::leaveWorkShop(IWorkshop& workshop) {  
+    workshops.erase(&workshop);
+    LOG_VERBOSE("* Worker left the Workshop *");
 }

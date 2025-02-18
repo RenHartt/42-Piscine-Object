@@ -1,5 +1,9 @@
 #include "Tool.hpp"
 
+int Tool::getNumberOfUses() const {
+    return numberOfUses;
+}
+
 void Tool::decreaseDurability() {
     if (numberOfUses > 0) {
         numberOfUses--;

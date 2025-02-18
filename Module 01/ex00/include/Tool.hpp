@@ -5,6 +5,8 @@
 class Tool {
     public:
         Tool(int numberOfUses): numberOfUses(numberOfUses) { LOG_VERBOSE("* Tool created *"); }
+        virtual ~Tool() {}
+        int getNumberOfUses() const;
 
         virtual void use() = 0;
     
