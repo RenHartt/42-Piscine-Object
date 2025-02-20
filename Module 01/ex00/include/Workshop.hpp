@@ -17,6 +17,10 @@ class Workshop : public IWorkshop {
             return typeid(ToolType);
         }
 
+        int getWorkshopSize() const {
+            return workers.size();
+        }
+
         void reviewApplication(Worker& worker) {
             LOG_VERBOSE("* Workshop received application *");
 
@@ -28,10 +32,6 @@ class Workshop : public IWorkshop {
             }
         }
 
-        bool containsWorker(Worker* worker) const {
-            return workers.find(worker) != workers.end();
-        }
-
         void deleteWorker(Worker& worker) {
             if (workers.find(&worker) != workers.end()) {
                 LOG_VERBOSE("* Worker removed from Workshop *");
@@ -41,17 +41,20 @@ class Workshop : public IWorkshop {
         }
 
         void executeWorkDay() {
-            LOG_VERBOSE("* Workshop launch workday *");
-            for (std::set<Worker*>::iterator it = this->workers.begin(); it != this->workers.end(); ) {
-                Worker* worker = *it;
-                ++it;
+            if (workers.size() > 0) {
+                LOG_VERBOSE("* Workshop launch workday *");
+                for (std::set<Worker*>::iterator it = this->workers.begin(); it != this->workers.end(); ) {
+                    Worker* worker = *it++;
 
-                worker->work<ToolType>();
+                    worker->work<ToolType>();
+                }
+            } else {
+                LOG_VERBOSE("* No worker in workshop to work *");
             }
         }
 
-        std::set<Worker*> workers;
     private:
+        std::set<Worker*> workers;
 
         void addWorker(Worker& worker) { 
             workers.insert(&worker); 
