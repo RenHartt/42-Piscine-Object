@@ -1,10 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "shape.hpp"
 #include "rectangle.hpp"
 #include "circle.hpp"
 #include "triangle.hpp"
-#include <typeinfo>
 
 int main() {
     std::vector<Shape*> shapes;
