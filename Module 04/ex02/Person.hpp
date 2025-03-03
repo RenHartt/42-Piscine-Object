@@ -3,6 +3,9 @@
 #include <string>
 #include <memory>
 #include <set>
+#include <iostream>
+
+#include "Form.hpp"
 
 enum class FormType;
 class Form;
@@ -52,7 +55,10 @@ class Headmaster : public Staff
 		
 	public:
 		Headmaster(std::string p_name): Staff(p_name) {}
-		void receiveForm(std::shared_ptr<Form> p_form);
+		void receiveForm(std::shared_ptr<Form> p_form) {
+			std::cout << "Formulaire approuvé par le directeur." << std::endl;
+            p_form->execute();
+		}
 };
 
 class Secretary : public Staff
