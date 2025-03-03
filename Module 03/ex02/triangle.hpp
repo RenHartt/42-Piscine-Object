@@ -15,10 +15,10 @@ class Triangle: public Shape {
         }
         double getPerimeter() const override { return a + b + c; }
         std::string getType() const override { return "Triangle"; }
-        std::vector<double> getDimensions() const override { return {a, b, c}; }
+        std::set<double> getDimensions() const override { return {a, b, c}; }
         
         void print(std::ostream& os) const override {
-            std::vector<double> dimensions = getDimensions();
+            std::set<double> dimensions = getDimensions();
             os << "Triangle - Sides: " << dimensions[0] << ", " << dimensions[1] << ", " << dimensions[2];
         }        
 };

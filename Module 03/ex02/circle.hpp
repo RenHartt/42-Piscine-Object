@@ -14,10 +14,10 @@ class Circle: public Shape {
         double getArea() const override { return radius * radius * PI; }
         double getPerimeter() const override { return (radius + radius) * PI; }
         std::string getType() const override { return "Circle"; }
-        std::vector<double> getDimensions() const override { return {radius}; }
+        std::set<double> getDimensions() const override { return {radius}; }
 
         void print(std::ostream& os) const override {
-            std::vector<double> dimensions = getDimensions();
+            std::set<double> dimensions = getDimensions();
             os << "Circle - Radius: " << dimensions[0];
         }        
 };

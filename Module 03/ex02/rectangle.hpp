@@ -11,10 +11,10 @@ class Rectangle: public Shape {
         double getArea() const override { return width * height; }
         double getPerimeter() const override { return 2 * width + 2 * height; }
         std::string getType() const override { return "Rectangle"; }
-        std::vector<double> getDimensions() const override { return {width, height}; }
+        std::set<double> getDimensions() const override { return {width, height}; }
         
         void print(std::ostream& os) const override {
-            std::vector<double> dimensions = getDimensions();
+            std::set<double> dimensions = getDimensions();
             os << "Rectangle - Width: " << dimensions[0] << ", Height: " << dimensions[1];
         }        
 };

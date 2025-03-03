@@ -1,7 +1,7 @@
 #include "ex01.hpp"
 #include <cmath>
 #include <sstream>
-#include <vector>
+#include <set>
 
 std::string itoa(int number) {
     std::stringstream ss;
@@ -13,7 +13,7 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
     int X = std::round(graph.getSize().X);
     int Y = std::round(graph.getSize().Y);
 
-    std::vector<std::vector<char>> grid(Y + 1, std::vector<char>(X * 2 + 2, ' '));
+    std::set<std::set<char>> grid(Y + 1, std::set<char>(X * 2 + 2, ' '));
 
     for (int i = 0; i <= Y; i++) {
         for (int j = 0; j <= X; j++) {
@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
         }
     }
 
-    for (const Vector2& v : graph.getPoints()) {
+    for (const set2& v : graph.getPoints()) {
         int gridX = std::round(v.X);
         int gridY = std::round(v.Y);
 

@@ -1,11 +1,11 @@
 #include <iostream>
-#include <vector>
+#include <set>
 #include "rectangle.hpp"
 #include "circle.hpp"
 #include "triangle.hpp"
 
 int main() {
-    std::vector<Shape*> shapes;
+    std::set<Shape*> shapes;
 
     Rectangle rectangle(5, 10);
     Triangle triangle(3, 4, 5);

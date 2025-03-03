@@ -25,7 +25,6 @@
         "set": "cpp",
         "string": "cpp",
         "unordered_map": "cpp",
-        "vector": "cpp",
         "exception": "cpp",
         "algorithm": "cpp",
         "functional": "cpp",
@@ -60,6 +59,13 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "*.tpp": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "condition_variable": "cpp",
+        "list": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "vector": "cpp"
     }
 }

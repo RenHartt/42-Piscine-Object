@@ -59,8 +59,23 @@ class Secretary : public Staff
 {
 	public:
 		Secretary(std::string p_name): Staff(p_name) {}
-		std::shared_ptr<Form> createForm(FormType p_formType);
-		void archiveForm();
+
+		std::shared_ptr<Form> createForm(FormType p_formType) {
+			switch (p_formType) {
+				case FormType::CourseFinished:
+					return std::make_shared<CourseFinishedForm>();
+				case FormType::NeedMoreClassRoom:
+					return std::make_shared<NeedMoreClassRoomForm>();
+				case FormType::NeedCourseCreation:
+					return std::make_shared<NeedCourseCreationForm>();
+				case FormType::SubscriptionToCourse:
+					return std::make_shared<SubscriptionToCourseForm>();
+				default:
+					return nullptr;
+			}
+		}
+		
+		void archiveForm() {}
 };
 
 class Professor : public Staff

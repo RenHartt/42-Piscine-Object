@@ -4,7 +4,7 @@
 
 class ThuesdayDiscountCommand: public Command {
     public:
-        ThuesdayDiscountCommand(int id, const Client& client, const std::vector<Article>& articles)
+        ThuesdayDiscountCommand(int id, const Client& client, const std::set<Article>& articles)
             : Command(id, client, articles) {}
     
         double get_total_price() const {

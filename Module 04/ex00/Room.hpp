@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <set>
 
 #include "Person.hpp"
 #include "Course.hpp"
@@ -9,7 +9,7 @@ class Room
 {
 private:
 	long long ID;
-	std::vector<std::weak_ptr<Person>> _occupants;
+	std::set<std::weak_ptr<Person>> _occupants;
 
 public:
 	Room();
@@ -34,7 +34,7 @@ public:
 class SecretarialOffice: public Room
 {
 private:
-	std::vector<std::shared_ptr<Form>> _archivedForms;
+	std::set<std::shared_ptr<Form>> _archivedForms;
 
 public:
 

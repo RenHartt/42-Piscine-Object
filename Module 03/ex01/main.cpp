@@ -10,7 +10,7 @@ void print_total_price(const Command& command) {
 int main() {
     Client client("John Doe");
 
-    std::vector<Article> articles = {
+    std::set<Article> articles = {
         Article("Laptop", 1000.0, 1),  // 1 laptop à 1000€
         Article("Mouse", 50.0, 2)      // 2 souris à 50€ chacune
     };

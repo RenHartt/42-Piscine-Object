@@ -10,6 +10,7 @@ enum class FormType {
 class Form {
 private:
     FormType _formType;
+    bool _isSigned = false;
 
 public:
     Form(FormType p_formType) : _formType(p_formType) {}

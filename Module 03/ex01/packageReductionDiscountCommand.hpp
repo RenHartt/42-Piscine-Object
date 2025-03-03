@@ -4,7 +4,7 @@
 
 class PackageReductionDiscountCommand: public Command {
     public:
-        PackageReductionDiscountCommand(int id, const Client& client, const std::vector<Article>& articles)
+        PackageReductionDiscountCommand(int id, const Client& client, const std::set<Article>& articles)
             : Command(id, client, articles) {}
 
         double get_total_price() const {

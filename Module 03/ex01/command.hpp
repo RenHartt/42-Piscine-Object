@@ -2,7 +2,7 @@
 
 #include <ctime>
 #include <string>
-#include <vector>
+#include <set>
 
 struct Article {
     Article(const std::string& name, double price, double quantity)
@@ -33,9 +33,9 @@ class Command {
         const int id;
         const Date date;
         const Client client;
-        std::vector<Article> articles;
+        std::set<Article> articles;
     public:
-        Command(int id, const Client& client, const std::vector<Article>& articles)
+        Command(int id, const Client& client, const std::set<Article>& articles)
             : id(id), client(client), articles(articles) {}
         virtual ~Command() {}
         

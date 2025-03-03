@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <set>
 #include <memory>
 
 #include "Person.hpp"
@@ -11,7 +11,7 @@ class Course
 private:
     std::string _name;
     std::unique_ptr<Professor> _responsable;
-    std::vector<std::shared_ptr<Student>> _students;
+    std::set<std::shared_ptr<Student>> _students;
     int _numberOfClassToGraduate;
     int _maximumNumberOfStudent;
 
