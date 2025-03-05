@@ -6,26 +6,26 @@
 
 template <typename T>
 class List {
-protected:
-    std::list<std::shared_ptr<T>> list;
-    std::mutex mtx;
+    protected:
+        std::list<std::shared_ptr<T>> list;
+        std::mutex mtx;
 
-public:
-    void addToList(std::shared_ptr<T> toAdd) {
-        std::lock_guard<std::mutex> lock(mtx);
-        list.push_back(toAdd);
-    }
+    public:
+        void addToList(std::shared_ptr<T> toAdd) {
+            std::lock_guard<std::mutex> lock(mtx);
+            list.push_back(toAdd);
+        }
 
-    void removeFromList(std::shared_ptr<T> toRemove) {
-        std::lock_guard<std::mutex> lock(mtx);
-        list.remove(toRemove);
-    }
+        void removeFromList(std::shared_ptr<T> toRemove) {
+            std::lock_guard<std::mutex> lock(mtx);
+            list.remove(toRemove);
+        }
 
-    std::list<std::shared_ptr<T>> getList() const {
-        return list;
-    }
+        std::list<std::shared_ptr<T>> getList() const {
+            return list;
+        }
 
-    virtual ~List() {}
+        virtual ~List() {}
 };
 
 class StudentList : public List<Student>, public Singleton<StudentList> {};
