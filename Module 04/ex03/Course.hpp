@@ -4,6 +4,9 @@
 #include <set>
 #include <string>
 
+class Professor;
+class Student;
+
 class Course
 {
     private:
@@ -14,10 +17,10 @@ class Course
         int _maximumNumberOfStudent;
 
     public:
-        Course(std::string p_name): _name(p_name), _responsable(nullptr) {}
+        Course(std::string p_name);
         
-        std::string getName() const { return _name; }
+        std::string getName() const;
 
-        void assign(std::shared_ptr<Professor> p_professor) { _responsable = p_professor; }
-        void subscribe(std::shared_ptr<Student> p_student) { _students.insert(p_student); }
+        void assign(std::shared_ptr<Professor> p_professor);
+        void subscribe(std::shared_ptr<Student> p_student);
 };

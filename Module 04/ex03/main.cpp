@@ -1,4 +1,8 @@
-#include <iostream>
+#include "Course.hpp"
+#include "Form.hpp"
+#include "List.hpp"
+#include "Person.hpp"
+#include "Room.hpp"
 
 int main() {
     // Création des listes Singletons

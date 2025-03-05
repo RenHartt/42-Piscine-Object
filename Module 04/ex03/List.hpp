@@ -4,6 +4,13 @@
 #include <memory>
 #include <mutex>
 
+#include "Singleton.hpp"
+
+class Student;
+class Staff;
+class Course;
+class Room;
+
 template <typename T>
 class List {
     protected:
