@@ -6,16 +6,6 @@
 #include <vector>
 #include <iostream>
 
-#include "Form.hpp"
-
-enum class FormType;
-class Form;
-class Classroom;
-class Student;
-class Staff;
-class Course;
-class Room;
-
 class Person
 {
 	protected:
@@ -25,9 +15,9 @@ class Person
 		Person(std::string p_name): _name(p_name), _currentRoom(nullptr) {}
 		virtual ~Person() {}
 
-		std::shared_ptr<Room> room() {
-			return (_currentRoom);
-		}
+		std::string getName() const { return _name; }
+
+		std::shared_ptr<Room> room() { return (_currentRoom); }
 };
 
 class Staff : public Person

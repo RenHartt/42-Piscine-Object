@@ -1,11 +1,8 @@
 #pragma once
 
-#include <string>
-#include <set>
 #include <memory>
-
-class Professor;
-class Student;
+#include <set>
+#include <string>
 
 class Course
 {
@@ -19,11 +16,8 @@ class Course
     public:
         Course(std::string p_name): _name(p_name), _responsable(nullptr) {}
         
-        void assign(std::shared_ptr<Professor> p_professor) {
-            _responsable = p_professor;
-        }
+        std::string getName() const { return _name; }
 
-        void subscribe(std::shared_ptr<Student> p_student) {
-            _students.insert(p_student);
-        }
+        void assign(std::shared_ptr<Professor> p_professor) { _responsable = p_professor; }
+        void subscribe(std::shared_ptr<Student> p_student) { _students.insert(p_student); }
 };

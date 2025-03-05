@@ -1,25 +1,52 @@
 #include "Person.hpp"
 #include "Form.hpp"
-#include <iostream>
 #include <memory>
 
 int main() {
-    Headmaster headmaster("M. Dupont");
-    Secretary secretary("Mme Martin");
+    std::shared_ptr<Secretary> secretary = std::make_shared<Secretary>("Alice");
+    std::shared_ptr<Headmaster> headmaster = std::make_shared<Headmaster>("Mr. Smith");
 
-    std::cout << "Le secrétaire a créer trois formulaires.\n" << std::endl;
+    std::cout << "===== Création des formulaires =====" << std::endl;
+    
+    std::shared_ptr<Form> courseFinished = secretary->createForm(FormType::CourseFinished);
+    std::shared_ptr<Form> needMoreClassroom = secretary->createForm(FormType::NeedMoreClassRoom);
+    std::shared_ptr<Form> needCourseCreation = secretary->createForm(FormType::NeedCourseCreation);
+    std::shared_ptr<Form> subscriptionToCourse = secretary->createForm(FormType::SubscriptionToCourse);
 
-    std::shared_ptr<Form> form1 = secretary.createForm(FormType::NeedCourseCreation);
-    std::shared_ptr<Form> form2 = secretary.createForm(FormType::SubscriptionToCourse);
-    std::shared_ptr<Form> form3 = secretary.createForm(FormType::NeedMoreClassRoom);
+    std::cout << "===== Tentative de signature AVANT remplissage =====" << std::endl;
+    headmaster->sign(courseFinished);
+    headmaster->sign(needMoreClassroom);
+    headmaster->sign(needCourseCreation);
+    headmaster->sign(subscriptionToCourse);
 
-    std::cout << "Le secrétaire envoie les formulaires au directeur..." << std::endl;
+    std::cout << "===== Remplissage des formulaires =====" << std::endl;
 
-    headmaster.receiveForm(form1);
-    headmaster.receiveForm(form2);
-    headmaster.receiveForm(form3);
+    if (courseFinished) {
+        std::dynamic_pointer_cast<CourseFinishedForm>(courseFinished)->fillForm("Bob", "Mathematics");
+    }
+    if (needMoreClassroom) {
+        std::dynamic_pointer_cast<NeedMoreClassRoomForm>(needMoreClassroom)->fillForm(3, "New students enrolled");
+    }
+    if (needCourseCreation) {
+        std::dynamic_pointer_cast<NeedCourseCreationForm>(needCourseCreation)->fillForm("Physics", "Dr. Johnson");
+    }
+    if (subscriptionToCourse) {
+        std::dynamic_pointer_cast<SubscriptionToCourseForm>(subscriptionToCourse)->fillForm("Alice", "Programming 101");
+    }
 
-    std::cout << "\nTous les formulaires ont été traités !" << std::endl;
+    std::cout << "===== Tentative de signature APRÈS remplissage =====" << std::endl;
+    headmaster->sign(courseFinished);
+    headmaster->sign(needMoreClassroom);
+    headmaster->sign(needCourseCreation);
+    headmaster->sign(subscriptionToCourse);
+
+    std::cout << "===== Exécution des formulaires signés =====" << std::endl;
+    headmaster->receiveForm(courseFinished);
+    headmaster->receiveForm(needMoreClassroom);
+    headmaster->receiveForm(needCourseCreation);
+    headmaster->receiveForm(subscriptionToCourse);
+
+    std::cout << "===== TEST TERMINÉ =====" << std::endl;
 
     return 0;
 }
