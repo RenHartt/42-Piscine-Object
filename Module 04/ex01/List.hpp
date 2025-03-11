@@ -14,21 +14,16 @@ class Room;
 template <typename T>
 class List {
 protected:
-    std::list<std::shared_ptr<T>> list;
+    std::list<T*> list;
     std::mutex mtx;
 
 public:
-    void addToList(std::shared_ptr<T> toAdd) {
+    void addList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
         list.push_back(toAdd);
     }
 
-    void removeFromList(std::shared_ptr<T> toRemove) {
-        std::lock_guard<std::mutex> lock(mtx);
-        list.remove(toRemove);
-    }
-
-    std::list<std::shared_ptr<T>> getList() const {
+    std::list<T*> getList() const {
         return list;
     }
 

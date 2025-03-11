@@ -1,43 +1,53 @@
 #pragma once
 
-enum class FormType {
-    CourseFinished,
-    NeedMoreClassRoom,
-    NeedCourseCreation,
-    SubscriptionToCourse
+enum class FormType
+{
+	CourseFinished,
+	NeedMoreClassRoom,
+	NeedCourseCreation,
+	SubscriptionToCourse
 };
 
-class Form {
+class Form
+{
 private:
-    FormType _formType;
+	FormType _formType;
 
 public:
-    Form(FormType p_formType) : _formType(p_formType) {}
-    virtual ~Form() {}
+	Form(FormType p_formType) {}
+	virtual ~Form();
 
-    virtual void execute() = 0;
+	virtual void execute() = 0;
 };
 
-class CourseFinishedForm : public Form {
+class CourseFinishedForm : public Form
+{
+private:
+
 public:
-    CourseFinishedForm() : Form(FormType::CourseFinished) {}
-    void execute() override {}
+	void execute();
 };
 
-class NeedMoreClassRoomForm : public Form {
+class NeedMoreClassRoomForm : public Form
+{
+private:
+
 public:
-    NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
-    void execute() override {}
+	void execute();
 };
 
-class NeedCourseCreationForm : public Form {
+class NeedCourseCreationForm : public Form
+{
+private:
+
 public:
-    NeedCourseCreationForm() : Form(FormType::NeedCourseCreation) {}
-    void execute() override {}
+	void execute();
 };
 
-class SubscriptionToCourseForm : public Form {
+class SubscriptionToCourseForm : public Form
+{
+private:
+
 public:
-    SubscriptionToCourseForm() : Form(FormType::SubscriptionToCourse) {}
-    void execute() override {}
+	void execute();
 };

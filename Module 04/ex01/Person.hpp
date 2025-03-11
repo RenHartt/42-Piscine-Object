@@ -1,76 +1,81 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <memory>
-#include <set>
 
-enum class FormType;
+class Room;
 class Form;
 class Classroom;
-class Student;
-class Staff;
-class Course;
-class Room;
+enum class FormType;
 
 class Person
 {
-	protected:
-		std::string _name;
-		std::shared_ptr<Room> _currentRoom;
-	public:
-		Person(std::string p_name): _name(p_name) {}
-		virtual ~Person() {}
+private:
+	std::string _name;
+	Room* _currentRoom;
+public:
+	Person(std::string p_name): _name(p_name) {}
 
-		std::shared_ptr<Room> room() {
-			return (_currentRoom);
-		}
+	const std::string& getName() const { return _name; }
+
+	Room* room() { return _currentRoom; }
 };
 
 class Staff : public Person
 {
-	public:
-		Staff(std::string p_name): Person(p_name) {}
-		void sign(std::shared_ptr<Form> p_form);
+private:
+
+public:
+	Staff(const std::string& name): Person(name) {}
+
+	void sign(Form* p_form);
 };
 
 class Student : public Person
 {
-	private:
-		std::set<std::shared_ptr<Course>> _subscribedCourse;
+private:
+	std::vector<Course*> _subscribedCourse;
 
-	public:
-		Student(std::string p_name): Person(p_name) {}
-		void attendClass(std::shared_ptr<Classroom> p_classroom);
-		void exitClass();
-		void graduate(std::shared_ptr<Course> p_course);
+public:
+	Student(const std::string& name): Person(name) {}
+
+	void attendClass(Classroom* p_classroom);
+	void exitClass();
+	void graduate(Course* p_course);
 };
 
 class Headmaster : public Staff
 {
-	private:
-		std::set<std::shared_ptr<Form>> _formToValidate;
-		
-	public:
-		Headmaster(std::string p_name): Staff(p_name) {}
-		void receiveForm(std::shared_ptr<Form> p_form);
+private:
+	std::vector<Form*> _formToValidate;
+	
+public:
+	Headmaster(const std::string& name): Staff(name) {}
+
+	void receiveForm(Form* p_form);
 };
 
 class Secretary : public Staff
 {
-	public:
-		Secretary(std::string p_name): Staff(p_name) {}
-		std::shared_ptr<Form> createForm(FormType p_formType);
-		void archiveForm();
+private:
+
+public:
+	Secretary(const std::string& name): Staff(name) {}
+
+	Form* createForm(FormType p_formType);
+	void archiveForm();
 };
 
 class Professor : public Staff
 {
-	private:
-		std::shared_ptr<Course> _currentCourse;
+private:
+	Course* _currentCourse;
 
-	public:
-		Professor(std::string p_name): Staff(p_name) {}
-		void assignCourse(std::shared_ptr<Course> p_course);
-		void doClass();
-		void closeCourse();
+public:
+	Professor(const std::string& name): Staff(name) {}
+
+	void assignCourse(Course* p_course);
+	void doClass();
+	void closeCourse();
 };

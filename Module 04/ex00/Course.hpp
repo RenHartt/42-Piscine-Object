@@ -1,22 +1,22 @@
 #pragma once
 
 #include <string>
-#include <set>
-#include <memory>
+#include <vector>
 
-#include "Person.hpp"
+class Professor;
+class Student;
 
 class Course
 {
 private:
     std::string _name;
-    std::unique_ptr<Professor> _responsable;
-    std::set<std::shared_ptr<Student>> _students;
+    Professor* _responsable;
+    std::vector<Student*> _students;
     int _numberOfClassToGraduate;
     int _maximumNumberOfStudent;
 
 public:
     Course(std::string p_name);
-    void assign(std::unique_ptr<Professor> p_professor);
-    void subscribe(std::shared_ptr<Student> p_student);
+    void assign(Professor* p_professor);
+    void subscribe(Student* p_student);
 };

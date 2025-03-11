@@ -1,11 +1,12 @@
+#include <iostream>
+
+#include "Singleton.hpp"
 #include "Course.hpp"
 #include "Event.hpp"
 #include "Form.hpp"
 #include "List.hpp"
 #include "Person.hpp"
 #include "Room.hpp"
-#include "Singleton.hpp"
-#include <iostream>
 
 int main() {
     StudentList& studentList = StudentList::getInstance();
@@ -13,38 +14,52 @@ int main() {
     CourseList& courseList = CourseList::getInstance();
     RoomList& roomList = RoomList::getInstance();
 
-    std::shared_ptr<Student> student1 = std::make_shared<Student>("Alice");
-    std::shared_ptr<Student> student2 = std::make_shared<Student>("Bob");
-    studentList.addToList(student1);
-    studentList.addToList(student2);
+    Student student("Bob");
+    Headmaster headmaster("Bob");
+    Secretary secretary("Bob");
+    Professor professor("Bob");
+    Course course("Bob");
+    Classroom classroom;
+    SecretarialOffice secretarialOffice;
+    HeadmasterOffice headmasterOffice;
+    StaffRestRoom staffRestRoom;
+    Courtyard courtyard;
 
-    std::shared_ptr<Professor> prof1 = std::make_shared<Professor>("Dr. Brown");
-    std::shared_ptr<Professor> prof2 = std::make_shared<Professor>("Prof. Wilson");
-    staffList.addToList(prof1);
-    staffList.addToList(prof2);
+    studentList.addList(&student);
+    staffList.addList(&headmaster);
+    staffList.addList(&secretary);
+    staffList.addList(&professor);
+    courseList.addList(&course);
+    roomList.addList(&classroom);
+    roomList.addList(&secretarialOffice);
+    roomList.addList(&headmasterOffice);
+    roomList.addList(&staffRestRoom);
+    roomList.addList(&courtyard);
 
-    std::shared_ptr<Course> course1 = std::make_shared<Course>("Mathematics");
-    std::shared_ptr<Course> course2 = std::make_shared<Course>("Physics");
-    course1->assign(prof1);
-    course2->assign(prof2);
-    courseList.addToList(course1);
-    courseList.addToList(course2);
+    auto students = studentList.getList();
+    auto staffs = staffList.getList();
+    auto courses = courseList.getList();
+    auto rooms = roomList.getList();
 
-    course1->subscribe(student1);
-    course2->subscribe(student2);
-    course1->subscribe(student2);
+    std::cout << "student list :" << std::endl;
+    for (const auto& student : students) {
+        std::cout << student->getName() << std::endl;
+    }
 
-    std::shared_ptr<Classroom> room1 = std::make_shared<Classroom>();
-    std::shared_ptr<Classroom> room2 = std::make_shared<Classroom>();
-    roomList.addToList(room1);
-    roomList.addToList(room2);
+    std::cout << "staff list :" << std::endl;
+    for (const auto& staff : staffs) {
+        std::cout << staff->getName() << std::endl;
+    }
 
-    std::cout << "--- Récapitulatif des données ---" << std::endl;
+    std::cout << "course list :" << std::endl;
+    for (const auto& course : courses) {
+        std::cout << course << std::endl;
+    }
 
-    std::cout << "Nombre d'étudiants : " << studentList.getList().size() << std::endl;
-    std::cout << "Nombre de professeurs : " << staffList.getList().size() << std::endl;
-    std::cout << "Nombre de cours : " << courseList.getList().size() << std::endl;
-    std::cout << "Nombre de salles : " << roomList.getList().size() << std::endl;
+    std::cout << "room list :" << std::endl;
+    for (const auto& room : rooms) {
+        std::cout << room << std::endl;
+    }
 
     return 0;
 }
