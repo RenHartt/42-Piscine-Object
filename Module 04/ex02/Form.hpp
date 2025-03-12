@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include <string>
 
-class Headmaster;
+class Course;
+class Student;
 
 enum class FormType {
     CourseFinished,
@@ -12,121 +13,68 @@ enum class FormType {
 };
 
 class Form {
-    private:
-        FormType _formType;
-        bool _signed;
-        bool _isFilled;
+private:
+    FormType _formType;
+    bool _signed;
+    bool _isFilled;
 
-        
-        friend class Headmaster;
-        
-        protected:
-        void setFilled(bool state) { _isFilled = state; }
-        void signForm() { _signed = true; }
-        
-    public:
-        Form(FormType p_formType) : _formType(p_formType), _signed(false), _isFilled(false) {}
-        virtual ~Form() {}
+    friend class Headmaster;
+    
+    protected:
+    void setFilled(bool state);
+    void signForm();
+    
+public:
+    Form(FormType p_formType);
+    virtual ~Form();
 
-        virtual void execute() = 0;
+    virtual void execute() = 0;
 
-        bool isSigned() const { return _signed; }
-        bool isFilled() const { return _isFilled; }
-        FormType getFormType() { return _formType; }
+    bool isSigned() const;
+    bool isFilled() const;
+    FormType getFormType();
 };
 
 class CourseFinishedForm : public Form {
-    private:
-        std::string _studentName;
-        std::string _courseName;
+private:
+    Course* _course;
+
+public:    
+    CourseFinishedForm();
     
-    public:    
-        CourseFinishedForm() : Form(FormType::CourseFinished) {}
-        
-        void fillForm(const std::string& studentName, const std::string& courseName) {
-            _studentName = studentName;
-            _courseName = courseName;
-            setFilled(true);
-            std::cout << "Course Finished Form filled for student: " << _studentName 
-                      << ", course: " << _courseName << std::endl;
-        }
-        
-        void execute() override {
-            if (isSigned() == true) {
-                std::cout << "Processing Course Finished Form for " << _studentName 
-                << " in course: " << _courseName << std::endl;
-            }
-        }
+    void fillForm(Course* course);
+    void execute() override;
 };
 
 class NeedMoreClassRoomForm : public Form {
-    private:
-        int _roomCount;
-        std::string _reason;
-    
-    public:    
-        NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
-        
-        void fillForm(int roomCount, const std::string& reason) {
-            _roomCount = roomCount;
-            _reason = reason;
-            setFilled(true);
-            std::cout << "Need More Classroom Form filled. Rooms requested: " << _roomCount 
-                      << ", Reason: " << _reason << std::endl;
-        }
+private:
 
-        void execute() override {
-            if (isSigned() == true) {
-                std::cout << "Allocating " << _roomCount << " new classrooms due to: " 
-                << _reason << std::endl;
-            }
-        }
+public:    
+    NeedMoreClassRoomForm();
+    
+    void fillForm();
+    void execute() override;
 };
 
 class NeedCourseCreationForm : public Form {
-    private:
-        std::string _courseName;
-        std::string _professor;
-    
-    public:    
-        NeedCourseCreationForm() : Form(FormType::NeedCourseCreation) {}
-        
-        void fillForm(const std::string& courseName, const std::string& professor) {
-            _courseName = courseName;
-            _professor = professor;
-            setFilled(true);
-            std::cout << "Need Course Creation Form filled. Course: " << _courseName 
-                      << ", Professor: " << _professor << std::endl;
-        }
+private:
+    std::string _courseName;
 
-        void execute() override {
-            if (isSigned() == true) {
-                std::cout << "New course created: " << _courseName
-                << " by professor " << _professor << "." << std::endl;
-            }
-        }
+public:
+    NeedCourseCreationForm();
+    
+    void fillForm(const std::string& courseName);
+    void execute() override;
 };
 
 class SubscriptionToCourseForm : public Form {
-    private:
-        std::string _studentName;
-        std::string _courseName;
-    
-    public:    
-        SubscriptionToCourseForm() : Form(FormType::SubscriptionToCourse) {}
-        
-        void fillForm(const std::string& studentName, const std::string& courseName) {
-            _studentName = studentName;
-            _courseName = courseName;
-            setFilled(true);
-            std::cout << "Subscription to Course Form filled. Student: " << _studentName 
-                      << ", Course: " << _courseName << std::endl;
-        }
+private:
+    Student* _student;
+    Course* _course;
 
-        void execute() override {
-            if (isSigned() == true) {
-                std::cout << _studentName << " has been successfully enrolled in "
-                << _courseName << "." << std::endl;
-            }
-        }
+public:    
+    SubscriptionToCourseForm();
+    
+    void fillForm(Student* student, Course* course);
+    void execute() override;
 };    

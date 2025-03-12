@@ -1,40 +1,67 @@
 #pragma once
 
-#include <set>
-#include <memory>
-#include <iostream>
+#include <vector>
 
 class Person;
 class Course;
+class Form;
 
-class Room {
+class Room
+{
 private:
-    long long ID;
-    std::set<std::shared_ptr<Person>> _occupants;
+	long long ID;
+	std::vector<Person*> _occupants;
 
 public:
-    Room() {}
+	Room() {}
     virtual ~Room() {}
-
-    bool canEnter(std::shared_ptr<Person> person) { return true; }
-    void enter(std::shared_ptr<Person> person) { _occupants.insert(person); }
-    void exit(std::shared_ptr<Person> person) { _occupants.erase(person); }
-    void printOccupant() {
-		for (const auto& _occupant : _occupants) {
-			std::cout << _occupant << std::endl;
-		}
-	}
+	
+	bool canEnter(Person* person);
+	void enter(Person* person);
+	void exit(Person* person);
+	
+	void printOccupant();
 };
 
-class Classroom : public Room {
+class Classroom : public Room
+{
 private:
-    std::shared_ptr<Course> _currentCourse;
+	Course* _currentRoom;
 
 public:
-    void assignCourse(std::shared_ptr<Course> p_course) { _currentCourse = p_course; }
+	Classroom() {}
+	void assignCourse(Course* p_course);
 };
 
-class SecretarialOffice : public Room {};
-class HeadmasterOffice : public Room {};
-class StaffRestRoom : public Room {};
-class Courtyard : public Room {};
+class SecretarialOffice: public Room
+{
+private:
+	std::vector<Form*> _archivedForms;
+
+public:
+
+};
+
+class HeadmasterOffice : public Room
+{
+private:
+
+public:
+
+};
+
+class StaffRestRoom : public Room
+{
+private:
+
+public:
+
+};
+
+class Courtyard : public Room
+{
+private:
+
+public:
+
+};

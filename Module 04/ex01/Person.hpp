@@ -6,6 +6,7 @@
 
 class Room;
 class Form;
+class Course;
 class Classroom;
 enum class FormType;
 

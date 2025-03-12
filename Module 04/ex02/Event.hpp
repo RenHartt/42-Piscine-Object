@@ -1,5 +1,6 @@
 #pragma once
 
-enum class Event {
+enum class Event
+{
 	RingBell
 };

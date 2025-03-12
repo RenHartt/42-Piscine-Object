@@ -1,29 +1,25 @@
 #pragma once
 
 #include <string>
-#include <set>
-#include <memory>
+#include <vector>
 
 class Professor;
 class Student;
 
 class Course
 {
-    private:
-        std::string _name;
-        std::shared_ptr<Professor> _responsable;
-        std::set<std::shared_ptr<Student>> _students;
-        int _numberOfClassToGraduate;
-        int _maximumNumberOfStudent;
+private:
+    std::string _name;
+    Professor* _responsable;
+    std::vector<Student*> _students;
+    int _numberOfClassToGraduate;
+    int _maximumNumberOfStudent;
 
-    public:
-        Course(std::string p_name): _name(p_name), _responsable(nullptr) {}
-        
-        void assign(std::shared_ptr<Professor> p_professor) {
-            _responsable = p_professor;
-        }
+public:
+    Course(std::string p_name): _name(p_name) {}
 
-        void subscribe(std::shared_ptr<Student> p_student) {
-            _students.insert(p_student);
-        }
+    const std::string& getName() { return _name; }
+
+    void assign(Professor* p_professor) { _responsable = p_professor; }
+    void subscribe(Student* p_student) { _students.push_back(p_student); }
 };
