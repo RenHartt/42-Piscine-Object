@@ -28,8 +28,8 @@ void CourseFinishedForm::execute() {
         std::cout << "Cannot execute a non-signed form." << std::endl;
     } else {
         std::cout << "Processing Course Finished Form" << std::endl;
+        CourseList::getInstance().removeFromList(_course);
         delete _course;
-        _course = nullptr;
     }
 }
  
@@ -43,7 +43,7 @@ void NeedMoreClassRoomForm::execute() {
         std::cout << "Cannot execute a non-signed form." << std::endl;
     } else {
         std::cout << "Processing Need More Class Room Form." << std::endl;
-        RoomList::getInstance().addList(new Classroom());
+        RoomList::getInstance().addToList(new Classroom());
     }
 }
    
@@ -58,7 +58,7 @@ void NeedCourseCreationForm::execute() {
         std::cout << "Cannot execute a non-signed form." << std::endl;
     } else {
         std::cout << "Processing Need Course Creation Form." << std::endl;
-        CourseList::getInstance().addList(new Course(_courseName));
+        CourseList::getInstance().addToList(new Course(_courseName));
     }
 }
  
@@ -72,9 +72,9 @@ void SubscriptionToCourseForm::fillForm(Student* student, Course* course) {
                 << ", Course: " << _course->getName() << std::endl;
 }
 void SubscriptionToCourseForm::execute() {
-    if (!_course || _course == nullptr) {
+    if (CourseList::getInstance().getFromList(_course->getName()) == nullptr) {
         std::cout << "No course to subscribe." << std::endl;
-    } else if (!_student || _student == nullptr) {
+    } else if (StudentList::getInstance().getFromList(_student->getName()) == nullptr) {
         std::cout << "No student to add to course." << std::endl;
     } else if (isSigned() == false) {
         std::cout << "Cannot execute a non-signed form." << std::endl;

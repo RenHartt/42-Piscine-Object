@@ -18,16 +18,35 @@ protected:
     std::mutex mtx;
 
 public:
-    void addList(T* toAdd) {
+    void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
         list.push_back(toAdd);
+    }
+
+    void removeFromList(T* toRemove) {
+        std::lock_guard<std::mutex> lock(mtx);
+        list.remove(toRemove);
+    }
+
+    T* getFromList(const std::string& name) {
+        std::lock_guard<std::mutex> lock(mtx);
+        for (T* item : list) {
+            if (item->getName() == name) {
+                return item;
+            }
+        }
+        return nullptr;
     }
 
     std::list<T*> getList() const {
         return list;
     }
 
-    virtual ~List() {}
+    virtual ~List() {
+        for (T* item : list) {
+            delete item;
+        }
+    }
 };
 
 class StudentList : public List<Student>, public Singleton<StudentList> {};

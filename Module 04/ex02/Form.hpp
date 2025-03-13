@@ -4,6 +4,8 @@
 
 class Course;
 class Student;
+class Secretary;
+class Headmaster;
 
 enum class FormType {
     CourseFinished,
@@ -18,29 +20,32 @@ private:
     bool _signed;
     bool _isFilled;
 
-    friend class Headmaster;
+    friend Headmaster;
     
-    protected:
+protected:
+    Form(FormType p_formType);
+    
     void setFilled(bool state);
     void signForm();
     
 public:
-    Form(FormType p_formType);
     virtual ~Form();
-
-    virtual void execute() = 0;
 
     bool isSigned() const;
     bool isFilled() const;
     FormType getFormType();
+
+    virtual void execute() = 0;
 };
 
 class CourseFinishedForm : public Form {
 private:
     Course* _course;
 
-public:    
+    friend Secretary;
+
     CourseFinishedForm();
+public:
     
     void fillForm(Course* course);
     void execute() override;
@@ -48,9 +53,10 @@ public:
 
 class NeedMoreClassRoomForm : public Form {
 private:
-
-public:    
     NeedMoreClassRoomForm();
+
+    friend Secretary;
+public:    
     
     void fillForm();
     void execute() override;
@@ -60,8 +66,10 @@ class NeedCourseCreationForm : public Form {
 private:
     std::string _courseName;
 
-public:
     NeedCourseCreationForm();
+
+    friend Secretary;
+public:
     
     void fillForm(const std::string& courseName);
     void execute() override;
@@ -71,9 +79,11 @@ class SubscriptionToCourseForm : public Form {
 private:
     Student* _student;
     Course* _course;
-
-public:    
+    
     SubscriptionToCourseForm();
+
+    friend Secretary;
+public:    
     
     void fillForm(Student* student, Course* course);
     void execute() override;
