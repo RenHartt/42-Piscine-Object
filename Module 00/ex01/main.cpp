@@ -1,9 +1,10 @@
 #include "ex01.hpp"
 
 int main(void) {
-    Graph graph({9, 9});
-    for (float i = 0; i <= 9; i++) {
-        graph.addPoint({i, i});
+    int size = 5;
+    Graph graph(Vector2(size, size));
+    if (graph.readPointsFile("points.txt") == false) {
+        return 1;
     }
     std::cout << graph << std::endl;
 }

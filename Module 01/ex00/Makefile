@@ -8,7 +8,7 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp) main.cpp
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 
 CXX = c++
-CXXFLAGS = -g -Wall -Wextra -Werror -std=c++11 -I$(INC_DIR)
+CXXFLAGS = -g -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR)
 
 ifeq ($(DEBUG), 1)
     CXXFLAGS += -DDEBUG

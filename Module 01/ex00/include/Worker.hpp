@@ -6,12 +6,12 @@
 #include <set>
 
 struct Position {
-    Position(int x, int y): x(x), y(y) {}
-    int x, y;
+    Position(int x = 0, int y = 0, int z = 0): x(x), y(y), z(z) {}
+    int x, y, z;
 };
 
 struct Statistic {
-    Statistic(int level, int exp): level(level), exp(exp) {}
+    Statistic(int level = 0, int exp = 0): level(level), exp(exp) {}
     int level, exp;
 };
 

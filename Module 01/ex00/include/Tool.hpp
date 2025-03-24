@@ -19,14 +19,14 @@ class Tool {
 
 class Hammer : public Tool {
     public:
-        Hammer(int numberOfUses): Tool(numberOfUses) { LOG_VERBOSE("* Hammer created *"); }
+        Hammer(int numberOfUses = 0): Tool(numberOfUses) { LOG_VERBOSE("* Hammer created *"); }
 
         void use();
 };
 
 class Shovel : public Tool {
     public:
-        Shovel(int numberOfUses): Tool(numberOfUses) { LOG_VERBOSE("* Shovel created *"); }
+        Shovel(int numberOfUses = 0): Tool(numberOfUses) { LOG_VERBOSE("* Shovel created *"); }
 
         void use();
 };

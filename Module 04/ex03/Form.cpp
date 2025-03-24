@@ -32,7 +32,7 @@ void CourseFinishedForm::execute() {
     }
 }
 
-    NeedMoreClassRoomForm::NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
+NeedMoreClassRoomForm::NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
         
 void NeedMoreClassRoomForm::fillForm(int roomCount, const std::string& reason) {
     _roomCount = roomCount;

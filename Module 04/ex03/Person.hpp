@@ -10,6 +10,8 @@ class Form;
 class Classroom;
 class Course;
 enum class FormType;
+class Secretary;
+class Professor;
 
 class Person
 {
@@ -38,8 +40,8 @@ class Student : public Person
 
 	public:
 		Student(std::string p_name);
-		void attendClass(std::shared_ptr<Classroom> p_classroom);
-		void exitClass();
+		void attendClass(std::shared_ptr<Course> p_course);
+		void exitClass(std::shared_ptr<Course> p_course);
 		void graduate(std::shared_ptr<Course> p_course);
 };
 
@@ -47,8 +49,16 @@ class Headmaster : public Staff {
     public:
         Headmaster(std::string p_name);
 
+		std::shared_ptr<Secretary> getSecretary();
+
         void sign(std::shared_ptr<Form> p_form) override;
         void receiveForm(std::shared_ptr<Form> p_form);
+
+		void createCourse(std::shared_ptr<Professor> professor, const std::string& courseName);
+		void subscribeStudent(std::shared_ptr<Student> student, const std::string& courseName);
+		void graduateStudent(std::shared_ptr<Student> student, const std::string& courseName);
+		void requestClassroom(int roomCount, const std::string& reason);
+
 };
 
 class Secretary : public Staff
