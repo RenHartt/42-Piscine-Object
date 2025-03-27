@@ -17,7 +17,7 @@ struct Statistic {
 
 class Worker {
     public:
-        Worker(): position(0, 0), statistic(1, 0) { LOG_VERBOSE("* Worker created *"); }
+        Worker(): position(0, 0), statistic(0, 0) { LOG_VERBOSE("* Worker created *"); }
 
         template<typename ToolType>
         ToolType* GetTool();

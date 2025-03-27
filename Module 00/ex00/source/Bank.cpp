@@ -19,14 +19,20 @@ long Bank::createAccount(double initialValue) {
 }
 
 void Bank::deleteAccount(long id) {
+    if (clientAccounts.find(id) == clientAccounts.end()) {
+        throw Bank::InvalidIndex();
+    }
     delete clientAccounts[id];
     clientAccounts.erase(id);
 }
 
 void Bank::makeDeposit(long id, double value) {
+    if (clientAccounts.find(id) == clientAccounts.end()) {
+        throw Bank::InvalidIndex();
+    }
     Account* account = clientAccounts[id];
 
-    if (account->value > std::numeric_limits<double>::max() - value) {
+    if (account->value > std::numeric_limits<double>::max() - value || value < 0) {
         throw Bank::InvalidOperation();
     }
     double tax = round(value * 0.05);
@@ -36,6 +42,9 @@ void Bank::makeDeposit(long id, double value) {
 }
 
 void Bank::makeWithdrawal(long id, double value) {
+    if (clientAccounts.find(id) == clientAccounts.end()) {
+        throw Bank::InvalidIndex();
+    }
     Account* account = clientAccounts[id];
 
     if (value > account->value) {
@@ -45,9 +54,12 @@ void Bank::makeWithdrawal(long id, double value) {
 }
 
 void Bank::giveLoan(long id, double value) {
+    if (clientAccounts.find(id) == clientAccounts.end()) {
+        throw Bank::InvalidIndex();
+    }
     Account* account = clientAccounts[id];
 
-    if (value > this->liquidity || account->value > std::numeric_limits<double>::max() - value) {
+    if (value > this->liquidity || account->value > std::numeric_limits<double>::max() - value || value < 0) {
         throw Bank::InvalidOperation();
     }
     account->value += value;

@@ -2,6 +2,17 @@
 #include "Tool.hpp"
 #include "Workshop.hpp"
 #include <iostream>
+#include <stdlib.h>
+#include <sstream>
+#include <string>
+
+std::string itoa(int n)
+{
+    std::stringstream ss;
+    ss << n;
+    return ss.str();
+}
+
 
 int main() {
     LOG_VERBOSE("===== Initialisation des Workers et Outils =====");
@@ -31,7 +42,7 @@ int main() {
 
     
     for (int day = 1; wsShovel.getWorkshopSize() || wsHammer.getWorkshopSize(); day++) {
-        LOG_VERBOSE("===== JOUR " + std::to_string(day) + " =====");
+        LOG_VERBOSE("===== JOUR " + itoa(day) + " =====");
 
         wsShovel.executeWorkDay();
         wsHammer.executeWorkDay();
