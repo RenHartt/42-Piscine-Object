@@ -1,0 +1,141 @@
+@startuml
+interface LinkablePart {
+    +void execute(float p_pression)
+}
+
+LinkablePart <|-- Injector : inherits
+LinkablePart <|-- BrakeController : inherits
+
+class Wheel {
+    +void executeRotation(float p_force)
+}
+
+class Gear {
+    -int demultiplier
+}
+
+class GearLever {
+    -Gear[] gears
+    -int level
+    +void change()
+    +Gear* activeGear()
+}
+
+GearLever *-- "0..*" Gear : contains
+
+class Transmission {
+    -Wheel*[] wheels
+    +void activate(float p_force)
+}
+
+Transmission o-- "0..*" Wheel : references
+
+class Crankshaft {
+    -Transmission* transmission
+    +void receiveForce(float p_volume)
+}
+
+Crankshaft o-- "1" Transmission : references
+
+class ExplosionChamber {
+    -Crankshaft* crankshaft
+    +void fill(float p_volume)
+}
+
+ExplosionChamber o-- "1" Crankshaft : references
+
+class Injector {
+    -ExplosionChamber* chamber
+    +void execute(float p_pression)
+}
+
+Injector o-- "1" ExplosionChamber : references
+
+class Motor {
+    -Injector injector
+    -ExplosionChamber chamber
+    -Crankshaft crankshaft
+    +void connectToTransmission(Transmission* p_transmission)
+}
+
+Motor *-- "1" Injector : owns
+Motor *-- "1" ExplosionChamber : owns
+Motor *-- "1" Crankshaft : owns
+
+class Pedal {
+    -LinkablePart* target
+    +void setTarget(LinkablePart* p_part)
+    +void use(float p_pression)
+}
+
+Pedal o-- "1" LinkablePart : references
+
+class Direction {
+    -Wheel[] wheels
+    +void turn(float p_angle)
+}
+
+Direction *-- "0..*" Wheel : contains
+
+class DAE {
+    -Direction* direction
+    -float force
+    +void use(float p_angle)
+}
+
+DAE o-- "1" Direction : references
+
+class SteerWheel {
+    -DAE* dae
+    +void turn(float p_angle)
+}
+
+SteerWheel o-- "1" DAE : references
+
+class Brake {
+    -Wheel* wheel
+    +void execute(float p_force)
+    +void attackWheel(Wheel* p_wheel)
+}
+
+Brake o-- "1" Wheel : references
+
+class BrakeController {
+    -Brake[] brakes
+    +void execute(float p_pression)
+}
+
+BrakeController *-- "0..*" Brake : contains
+
+class Cockpit {
+    -Pedal pedal
+    -SteerWheel steer
+    -GearLever gearlever
+}
+
+Cockpit *-- "1" SteerWheel : contains
+Cockpit *-- "1" GearLever : contains
+Cockpit *-- "1" Pedal : contains
+
+class Electronics {
+    -DAE dae
+}
+
+Electronics *-- "1" DAE : contains
+
+class Car {
+    -BrakeController brakeController
+    -Direction direction
+    -Transmission transmission
+    -Motor motor
+    -Electronics electronics
+    -Cockpit cockpit
+}
+
+Car *-- "1" Motor : contains
+Car *-- "1" Transmission : contains
+Car *-- "1" BrakeController : contains
+Car *-- "1" Direction : contains
+Car *-- "1" Electronics : contains
+Car *-- "1" Cockpit : contains
+@enduml
