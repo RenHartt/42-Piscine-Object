@@ -1,12 +1,24 @@
-#include "FileLogger.hpp"
-#include "OStreamLogger.hpp"
+#include "ILogger.hpp"
+#include "IHeader.hpp"
+#include <vector>
 
 int main () {
-    FileLogger fileLogger("log.txt");
-    OStreamLogger ostreamLogger(std::cout);
+    std::vector<ILogger*> loggers = {
+        new OStreamLogger(std::cout),
+        new OStreamLogger(std::cout, new StringHeader("Error")),
+        new OStreamLogger(std::cout, new DateHeader()),
+        new FileLogger("log.txt"),
+        new FileLogger("log.txt", new StringHeader("Error")),
+        new FileLogger("log.txt", new DateHeader())
+    };
 
-    fileLogger.write("Hello, Filewriteger!");
-    ostreamLogger.write("Hello, OStreamLogger!");
+    for (const auto& logger : loggers) {
+        logger->write("This is a log message.");
+    }
+
+    for (const auto& logger : loggers) {
+        delete logger;
+    }
 
     return 0;
 }

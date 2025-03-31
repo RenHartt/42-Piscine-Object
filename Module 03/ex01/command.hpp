@@ -2,10 +2,10 @@
 
 #include <ctime>
 #include <string>
-#include <set>
+#include <vector>
 
 struct Article {
-    Article(const std::string& name, double price, double quantity)
+    Article(const std::string& name = "", double price = 0, double quantity = 1)
         : name(name), price(price), quantity(quantity) {}
     
     std::string name;
@@ -29,35 +29,42 @@ struct Client {
 };
 
 class Command {
-    protected:
-        const int id;
-        const Date date;
-        const Client client;
-        std::set<Article> articles;
-    public:
-        Command(int id, const Client& client, const std::set<Article>& articles)
-            : id(id), client(client), articles(articles) {}
-        virtual ~Command() {}
-        
-        virtual double get_total_price() const {
-            double total(0);
-            for (const auto& article : articles) {
-                total += article.price * article.quantity;
-            }
-            return total;
-        }
+protected:
+    int id;
+    Date date;
+    Client client;
+    std::vector<Article> articles;
+public:
+    Command(int id, const Client& client, const std::vector<Article>& articles)
+        : id(id), client(client), articles(articles) {}
+    virtual ~Command() {}
+    
+    int get_id() const { return id; }
+    const Date& get_date() const { return date; }
+    const Client& get_client() const { return client; }
+    const std::vector<Article>& get_articles() const { return articles; }
 
-        friend std::ostream& operator<<(std::ostream& os, const Command& command);
+    virtual double get_total_price() const {
+        double total(0);
+        for (const auto& article : articles) {
+            total += article.price * article.quantity;
+        }
+        return total;
+    }
 };
 
 std::ostream& operator<<(std::ostream& os, const Command& command) {
-    os << "Commande " << command.id 
-    << " du " << command.date.date.tm_mday << "/" << command.date.date.tm_mon + 1 << "/" << command.date.date.tm_year + 1900
-    << " pour " << command.client.name << ":" << std::endl;
-    for (const auto& article : command.articles) {
-        os << "  - " << article.name << " (" << article.quantity << "x" << article.price << "€)\n";
+    
+    os << "Commande " << command.get_id() << " " << std::endl;
+    os << "Client: " << command.get_client().name << std::endl;
+    os << "Date: " << command.get_date().date.tm_mday << "/"
+    << (command.get_date().date.tm_mon + 1) << "/"
+    << (command.get_date().date.tm_year + 1900) << std::endl;
+    os << "Articles:" << std::endl;
+    for (const auto& article : command.get_articles()) {
+        os << " - " << article.name << ": " << article.price << "€ x " << article.quantity << std::endl;
     }
-    os << "Prix total: " << command.get_total_price() << "€";
+    os << "Total: " << command.get_total_price() << "€" << std::endl;
 
     return os;
 }

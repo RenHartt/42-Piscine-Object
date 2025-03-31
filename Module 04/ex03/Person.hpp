@@ -15,72 +15,71 @@ class Professor;
 
 class Person
 {
-	protected:
-		std::string _name;
-		std::shared_ptr<Room> _currentRoom;
-	public:
-		Person(std::string p_name);
-		virtual ~Person() {}
+protected:
+	std::string _name;
+	std::shared_ptr<Room> _currentRoom;
+public:
+	Person(std::string p_name);
+	virtual ~Person() {}
 
-		std::string getName() const;
-		std::shared_ptr<Room> room();
+	std::string getName() const;
+	std::shared_ptr<Room> room();
 };
 
 class Staff : public Person
 {
-	public:
-		Staff(std::string p_name);
-		virtual void sign(std::shared_ptr<Form> p_form);
+public:
+	Staff(std::string p_name);
+	virtual void sign(std::shared_ptr<Form> p_form);
 };
 
 class Student : public Person
 {
-	private:
-		std::set<std::shared_ptr<Course>> _subscribedCourse;
+private:
+	std::set<std::shared_ptr<Course>> _subscribedCourse;
 
-	public:
-		Student(std::string p_name);
-		void attendClass(std::shared_ptr<Course> p_course);
-		void exitClass(std::shared_ptr<Course> p_course);
-		void graduate(std::shared_ptr<Course> p_course);
+public:
+	Student(std::string p_name);
+	void attendClass(std::shared_ptr<Course> p_course);
+	void exitClass(std::shared_ptr<Course> p_course);
+	void graduate(std::shared_ptr<Course> p_course);
 };
 
 class Headmaster : public Staff {
-    public:
-        Headmaster(std::string p_name);
+public:
+	Headmaster(std::string p_name);
 
-		std::shared_ptr<Secretary> getSecretary();
+	std::shared_ptr<Secretary> getSecretary();
 
-        void sign(std::shared_ptr<Form> p_form) override;
-        void receiveForm(std::shared_ptr<Form> p_form);
+	void sign(std::shared_ptr<Form> p_form) override;
+	void receiveForm(std::shared_ptr<Form> p_form);
 
-		void createCourse(std::shared_ptr<Professor> professor, const std::string& courseName);
-		void subscribeStudent(std::shared_ptr<Student> student, const std::string& courseName);
-		void graduateStudent(std::shared_ptr<Student> student, const std::string& courseName);
-		void requestClassroom(int roomCount, const std::string& reason);
-
+	void createCourse(std::shared_ptr<Professor> professor, const std::string& courseName);
+	void subscribeStudent(std::shared_ptr<Student> student, const std::string& courseName);
+	void graduateStudent(std::shared_ptr<Student> student, const std::string& courseName);
+	void requestClassroom(int roomCount, const std::string& reason);
 };
 
 class Secretary : public Staff
 {
-	private:
-		std::vector<std::shared_ptr<Form>> _formsCreated;
+private:
+	std::vector<std::shared_ptr<Form>> _formsCreated;
 
-	public:
-		Secretary(std::string p_name);
+public:
+	Secretary(std::string p_name);
 
-		std::shared_ptr<Form> createForm(FormType p_formType);
-		void archiveForm();
+	std::shared_ptr<Form> createForm(FormType p_formType);
+	void archiveForm();
 };
 
 class Professor : public Staff
 {
-	private:
-		std::shared_ptr<Course> _currentCourse;
+private:
+	std::shared_ptr<Course> _currentCourse;
 
-	public:
-		Professor(std::string p_name);
-		void assignCourse(std::shared_ptr<Course> p_course);
-		void doClass();
-		void closeCourse();
+public:
+	Professor(std::string p_name);
+	void assignCourse(std::shared_ptr<Course> p_course);
+	void doClass();
+	void closeCourse();
 };
