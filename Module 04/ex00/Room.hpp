@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <set>
 
 class Person;
 class Course;
@@ -10,7 +10,7 @@ class Room
 {
 private:
 	long long ID;
-	std::vector<Person*> _occupants;
+	std::set<Person*> _occupants;
 
 public:
 	Room();
@@ -35,7 +35,7 @@ public:
 class SecretarialOffice: public Room
 {
 private:
-	std::vector<Form*> _archivedForms;
+	std::set<Form*> _archivedForms;
 
 public:
 

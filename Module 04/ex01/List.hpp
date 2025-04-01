@@ -1,8 +1,9 @@
 #pragma once
 
-#include <list>
+#include <set>
 #include <memory>
 #include <mutex>
+#include <iostream>
 
 #include "Singleton.hpp"
 
@@ -14,23 +15,60 @@ class Room;
 template <typename T>
 class List {
 protected:
-    std::list<T*> list;
+    std::set<T*> list;
     std::mutex mtx;
 
+    virtual void printItem(T* item) = 0;
+
 public:
-    void addList(T* toAdd) {
+    virtual ~List() {
+        for (const auto& item : list) {
+            delete item;
+        }
+        list.clear();
+    }
+    
+    void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
-        list.push_back(toAdd);
+        list.insert(toAdd);
     }
 
-    std::list<T*> getList() const {
-        return list;
+    void removeFromList(T* toRemove) {
+        std::lock_guard<std::mutex> lock(mtx);
+        list.erase(toRemove);
     }
 
-    virtual ~List() {}
+    T* getFromList(T* toGet) {
+        std::lock_guard<std::mutex> lock(mtx);
+        auto it = list.find(toGet);
+        if (it != list.end()) return *it;
+        return nullptr;
+    }
+
+    void printList() {
+        std::lock_guard<std::mutex> lock(mtx);
+        for (const auto& item : list) {
+            printItem(item);
+        }
+    }
 };
 
-class StudentList : public List<Student>, public Singleton<StudentList> {};
-class StaffList : public List<Staff>, public Singleton<StaffList> {};
-class CourseList : public List<Course>, public Singleton<CourseList> {};
-class RoomList : public List<Room>, public Singleton<RoomList> {};
+class StudentList : public List<Student>, public Singleton<StudentList> {
+protected:
+    void printItem(Student* item) override;
+};
+
+class StaffList : public List<Staff>, public Singleton<StaffList> {
+protected:
+    void printItem(Staff* item) override;
+};
+
+class CourseList : public List<Course>, public Singleton<CourseList> {
+protected:
+    void printItem(Course* item) override;
+};
+
+class RoomList : public List<Room>, public Singleton<RoomList> {
+protected:
+    void printItem(Room* item) override;
+};

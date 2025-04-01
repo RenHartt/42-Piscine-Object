@@ -10,15 +10,7 @@ protected:
     IHeader* header;
 public:
     ILogger(IHeader* header = nullptr): header(header) {}
-    ILogger(const ILogger&) = delete;
-    ILogger& operator=(const ILogger&) = delete;
-    ILogger(ILogger&&) = delete;
-    ILogger& operator=(ILogger&&) = delete;
-    virtual ~ILogger() {
-        if (header != nullptr) {
-            delete header;
-        }
-    }
+    virtual ~ILogger() {}
     virtual void write(const std::string&) = 0;
 };
 

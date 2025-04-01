@@ -1,39 +1,70 @@
-#include "Person.hpp"
-#include "Form.hpp"
+#include <iostream>
+
+#include "Singleton.hpp"
 #include "Course.hpp"
-#include "Room.hpp"
+#include "Event.hpp"
+#include "Form.hpp"
 #include "List.hpp"
+#include "Person.hpp"
+#include "Room.hpp"
 
 int main() {
-    StaffList& staffList = StaffList::getInstance();
-    StudentList& studentList = StudentList::getInstance();
-    CourseList& courseList = CourseList::getInstance();
-    RoomList& roomList = RoomList::getInstance();
+    auto& staffList = StaffList::getInstance();
+    auto& studentList = StudentList::getInstance();
+    auto& courseList = CourseList::getInstance();
+    auto& roomList = RoomList::getInstance();
+
+    auto headmaster = new Headmaster("Headmaster");
+    auto secretary = new Secretary("Secretary");
+    auto professor = new Professor("Professor");
+    auto student = new Student("Student");
+    auto course = new Course("Math");
     
-    Secretary* secretary = new Secretary("Bob");
-    staffList.addToList(secretary);
-    Headmaster* headmaster = new Headmaster("Bob");
     staffList.addToList(headmaster);
-    Student* student = new Student("Bob");
+    staffList.addToList(secretary);
+    staffList.addToList(professor);
     studentList.addToList(student);
+    courseList.addToList(course);
 
-    Course* math = new Course("Mathematics");
-    courseList.addToList(math);
+    Form* courseFinishedForm = secretary->createForm(FormType::CourseFinished);
+    Form* needMoreClassRoomForm = secretary->createForm(FormType::NeedMoreClassRoom);
+    Form* needCourseCreationForm = secretary->createForm(FormType::NeedCourseCreation);
+    Form* subscriptionToCourseForm = secretary->createForm(FormType::SubscriptionToCourse);
 
-    Form* form1 = secretary->createForm(FormType::CourseFinished);
-    Form* form4 = secretary->createForm(FormType::SubscriptionToCourse);
+    CourseFinishedForm* courseFinishedFormPtr = dynamic_cast<CourseFinishedForm*>(courseFinishedForm);
+    NeedMoreClassRoomForm* needMoreClassRoomFormPtr = dynamic_cast<NeedMoreClassRoomForm*>(needMoreClassRoomForm);
+    NeedCourseCreationForm* needCourseCreationFormPtr = dynamic_cast<NeedCourseCreationForm*>(needCourseCreationForm);
+    SubscriptionToCourseForm* subscriptionToCourseFormPtr = dynamic_cast<SubscriptionToCourseForm*>(subscriptionToCourseForm);
 
-    static_cast<CourseFinishedForm*>(form1)->fillForm(math);
-    static_cast<SubscriptionToCourseForm*>(form4)->fillForm(student, math);
+    courseFinishedFormPtr->fill(course);
+    needMoreClassRoomFormPtr->fill(course);
+    needCourseCreationFormPtr->fill("Math", professor);
+    subscriptionToCourseFormPtr->fill(student, course);
 
-    headmaster->sign(form1);
-    headmaster->sign(form4);
+    headmaster->receiveForm(courseFinishedForm);
+    headmaster->receiveForm(needMoreClassRoomForm);
+    headmaster->receiveForm(needCourseCreationForm);
+    headmaster->receiveForm(subscriptionToCourseForm);
 
-    form1->execute();
-    form4->execute();
+    courseFinishedFormPtr->execute();
+    needMoreClassRoomFormPtr->execute();
+    needCourseCreationFormPtr->execute();
+    subscriptionToCourseFormPtr->execute();
 
-    delete form1;
-    delete form4;
+    headmaster->sign(courseFinishedForm);
+    headmaster->sign(needMoreClassRoomForm);
+    headmaster->sign(needCourseCreationForm);
+    headmaster->sign(subscriptionToCourseForm);
+
+    courseFinishedFormPtr->execute();
+    needMoreClassRoomFormPtr->execute();
+    needCourseCreationFormPtr->execute();
+    subscriptionToCourseFormPtr->execute();
+
+    delete courseFinishedForm;
+    delete needMoreClassRoomForm;
+    delete needCourseCreationForm;
+    delete subscriptionToCourseForm;
 
     return 0;
 }

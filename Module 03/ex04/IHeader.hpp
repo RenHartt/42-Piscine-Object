@@ -6,10 +6,6 @@
 class IHeader {
 public:
     IHeader() = default;
-    IHeader(const IHeader&) = delete;
-    IHeader& operator=(const IHeader&) = delete;
-    IHeader(IHeader&&) = delete;
-    IHeader& operator=(IHeader&&) = delete;
     virtual ~IHeader() = default;
     virtual std::string getHeader() = 0;
 };

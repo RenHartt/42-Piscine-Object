@@ -1,8 +1,9 @@
 #pragma once
 
-#include <list>
+#include <set>
 #include <memory>
 #include <mutex>
+#include <iostream>
 
 #include "Singleton.hpp"
 
@@ -14,42 +15,63 @@ class Room;
 template <typename T>
 class List {
 protected:
-    std::list<T*> list;
+    std::set<T*> list;
     std::mutex mtx;
 
+    virtual void printItem(T* item) = 0;
+
 public:
+    virtual ~List() {
+        for (const auto& item : list) {
+            delete item;
+        }
+        list.clear();
+    }
+    
     void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
-        list.push_back(toAdd);
+        list.insert(toAdd);
     }
 
     void removeFromList(T* toRemove) {
         std::lock_guard<std::mutex> lock(mtx);
-        list.remove(toRemove);
+        list.erase(toRemove);
     }
 
-    T* getFromList(const std::string& name) {
+    T* getFromList(const std::string& toGet) {
         std::lock_guard<std::mutex> lock(mtx);
-        for (T* item : list) {
-            if (item->getName() == name) {
+        for (const auto& item : list) {
+            if (item->getName() == toGet) {
                 return item;
             }
         }
         return nullptr;
     }
 
-    std::list<T*> getList() const {
-        return list;
-    }
-
-    virtual ~List() {
-        for (T* item : list) {
-            delete item;
+    void printList() {
+        std::lock_guard<std::mutex> lock(mtx);
+        for (const auto& item : list) {
+            printItem(item);
         }
     }
 };
 
-class StudentList : public List<Student>, public Singleton<StudentList> {};
-class StaffList : public List<Staff>, public Singleton<StaffList> {};
-class CourseList : public List<Course>, public Singleton<CourseList> {};
-class RoomList : public List<Room>, public Singleton<RoomList> {};
+class StudentList : public List<Student>, public Singleton<StudentList> {
+protected:
+    void printItem(Student* item) override;
+};
+
+class StaffList : public List<Staff>, public Singleton<StaffList> {
+protected:
+    void printItem(Staff* item) override;
+};
+
+class CourseList : public List<Course>, public Singleton<CourseList> {
+protected:
+    void printItem(Course* item) override;
+};
+
+class RoomList : public List<Room>, public Singleton<RoomList> {
+protected:
+    void printItem(Room* item) override;
+};

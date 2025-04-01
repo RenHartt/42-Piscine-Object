@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <set>
 #include <memory>
 
 class Room;
@@ -31,7 +31,7 @@ public:
 class Student : public Person
 {
 private:
-	std::vector<Course*> _subscribedCourse;
+	std::set<Course*> _subscribedCourse;
 
 public:
 	void attendClass(Classroom* p_classroom);
@@ -42,7 +42,7 @@ public:
 class Headmaster : public Staff
 {
 private:
-	std::vector<Form*> _formToValidate;
+	std::set<Form*> _formToValidate;
 	
 public:
 	void receiveForm(Form* p_form);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <set>
 
 class Professor;
 class Student;
@@ -11,7 +11,7 @@ class Course
 private:
     std::string _name;
     Professor* _responsable;
-    std::vector<Student*> _students;
+    std::set<Student*> _students;
     int _numberOfClassToGraduate;
     int _maximumNumberOfStudent;
 

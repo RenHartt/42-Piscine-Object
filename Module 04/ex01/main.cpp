@@ -9,57 +9,47 @@
 #include "Room.hpp"
 
 int main() {
-    StudentList& studentList = StudentList::getInstance();
-    StaffList& staffList = StaffList::getInstance();
-    CourseList& courseList = CourseList::getInstance();
-    RoomList& roomList = RoomList::getInstance();
+    auto& staffList = StaffList::getInstance();
+    auto& studentList = StudentList::getInstance();
+    auto& courseList = CourseList::getInstance();
+    auto& roomList = RoomList::getInstance();
 
-    Student student("Bob");
-    Headmaster headmaster("Bob");
-    Secretary secretary("Bob");
-    Professor professor("Bob");
-    Course course("Bob");
-    Classroom classroom;
-    SecretarialOffice secretarialOffice;
-    HeadmasterOffice headmasterOffice;
-    StaffRestRoom staffRestRoom;
-    Courtyard courtyard;
+    auto headmaster = new Headmaster("Headmaster");
+    auto secretary = new Secretary("Secretary");
+    auto professor1 = new Professor("Professor1");
+    auto professor2 = new Professor("Professor2");
+    auto student1 = new Student("Student1");
+    auto student2 = new Student("Student2");
+    auto course1 = new Course("Course1");
+    auto course2 = new Course("Course2");
+    auto classroom1 = new Classroom(course1);
+    auto classroom2 = new Classroom(course2);
+    auto secretarialOffice = new SecretarialOffice();
+    auto headmasterOffice = new HeadmasterOffice();
+    auto staffRestRoom = new StaffRestRoom();
 
-    studentList.addList(&student);
-    staffList.addList(&headmaster);
-    staffList.addList(&secretary);
-    staffList.addList(&professor);
-    courseList.addList(&course);
-    roomList.addList(&classroom);
-    roomList.addList(&secretarialOffice);
-    roomList.addList(&headmasterOffice);
-    roomList.addList(&staffRestRoom);
-    roomList.addList(&courtyard);
+    staffList.addToList(headmaster);
+    staffList.addToList(secretary);
+    staffList.addToList(professor1);
+    staffList.addToList(professor2);
+    studentList.addToList(student1);
+    studentList.addToList(student2);
+    courseList.addToList(course1);
+    courseList.addToList(course2);
+    roomList.addToList(classroom1);
+    roomList.addToList(classroom2);
+    roomList.addToList(secretarialOffice);
+    roomList.addToList(headmasterOffice);
+    roomList.addToList(staffRestRoom);
 
-    auto students = studentList.getList();
-    auto staffs = staffList.getList();
-    auto courses = courseList.getList();
-    auto rooms = roomList.getList();
-
-    std::cout << "student list :" << std::endl;
-    for (const auto& student : students) {
-        std::cout << student->getName() << std::endl;
-    }
-
-    std::cout << "staff list :" << std::endl;
-    for (const auto& staff : staffs) {
-        std::cout << staff->getName() << std::endl;
-    }
-
-    std::cout << "course list :" << std::endl;
-    for (const auto& course : courses) {
-        std::cout << course << std::endl;
-    }
-
-    std::cout << "room list :" << std::endl;
-    for (const auto& room : rooms) {
-        std::cout << room << std::endl;
-    }
+    std::cout << "Staff List:" << std::endl;
+    staffList.printList();
+    std::cout << "Student List:" << std::endl;
+    studentList.printList();
+    std::cout << "Course List:" << std::endl;
+    courseList.printList();
+    std::cout << "Room List:" << std::endl;
+    roomList.printList();
 
     return 0;
 }

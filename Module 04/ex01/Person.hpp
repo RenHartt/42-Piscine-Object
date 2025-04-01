@@ -1,22 +1,23 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <set>
 #include <memory>
 
 class Room;
-class Form;
 class Course;
 class Classroom;
+class Form;
 enum class FormType;
 
 class Person
 {
 private:
 	std::string _name;
-	Room* _currentRoom;
+	Room* _currentRoom = nullptr;
 public:
-	Person(std::string p_name): _name(p_name) {}
+	Person(std::string p_name) : _name(p_name) {}
+	virtual ~Person() {}
 
 	const std::string& getName() const { return _name; }
 
@@ -28,18 +29,18 @@ class Staff : public Person
 private:
 
 public:
-	Staff(const std::string& name): Person(name) {}
-
-	void sign(Form* p_form);
+	Staff(std::string p_name) : Person(p_name) {}
+	virtual ~Staff() {}
 };
 
 class Student : public Person
 {
 private:
-	std::vector<Course*> _subscribedCourse;
+	std::set<Course*> _subscribedCourse;
 
 public:
-	Student(const std::string& name): Person(name) {}
+	Student(std::string p_name) : Person(p_name) {}
+	~Student() {}
 
 	void attendClass(Classroom* p_classroom);
 	void exitClass();
@@ -49,11 +50,13 @@ public:
 class Headmaster : public Staff
 {
 private:
-	std::vector<Form*> _formToValidate;
+	std::set<Form*> _formToValidate;
 	
 public:
-	Headmaster(const std::string& name): Staff(name) {}
+	Headmaster(std::string p_name) : Staff(p_name) {}
+	~Headmaster() {}
 
+	void sign(Form* p_form);
 	void receiveForm(Form* p_form);
 };
 
@@ -62,7 +65,8 @@ class Secretary : public Staff
 private:
 
 public:
-	Secretary(const std::string& name): Staff(name) {}
+	Secretary(std::string p_name) : Staff(p_name) {}
+	~Secretary() {}
 
 	Form* createForm(FormType p_formType);
 	void archiveForm();
@@ -71,10 +75,11 @@ public:
 class Professor : public Staff
 {
 private:
-	Course* _currentCourse;
+	Course* _currentCourse = nullptr;
 
 public:
-	Professor(const std::string& name): Staff(name) {}
+	Professor(std::string p_name) : Staff(p_name) {}
+	~Professor() {}
 
 	void assignCourse(Course* p_course);
 	void doClass();
