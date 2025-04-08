@@ -63,13 +63,17 @@ class NeedCourseCreationForm : public Form
 private:
 	std::string _courseName;
 	Professor* _professor;
+	int _maxStudent;
+	int _nbrGraduate;
 public:
 	NeedCourseCreationForm() : Form(FormType::NeedCourseCreation) {}
 
-	void fill(const std::string& p_courseName, Professor* p_professor)
+	void fill(const std::string& p_courseName, Professor* p_professor, int p_maxStudent, int p_nbrGraduate)
 	{
 		_courseName = p_courseName;
 		_professor = p_professor;
+		_maxStudent = p_maxStudent;
+		_nbrGraduate = p_nbrGraduate;
 	}
 	bool isFilled() const override { return !_courseName.empty() && _professor != nullptr; }
 	

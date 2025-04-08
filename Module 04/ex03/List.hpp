@@ -38,6 +38,10 @@ public:
         list.erase(toRemove);
     }
 
+    const std::set<T*>& getList() const {
+        return list;
+    }
+
     T* getFromList(const std::string& toGet) {
         std::lock_guard<std::mutex> lock(mtx);
         for (const auto& item : list) {

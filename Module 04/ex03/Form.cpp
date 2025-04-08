@@ -15,7 +15,7 @@ void CourseFinishedForm::execute(Headmaster* p_headMaster) const {
 
 void NeedMoreClassRoomForm::execute(Headmaster* p_headMaster) const {
     if (isSigned() == true) {
-        p_headMaster->proccessNeedMoreClassRoom(_course);        
+        p_headMaster->processNeedMoreClassRoom(_course);        
     } else {
         std::cout << "Form is not signed." << std::endl;
     }
@@ -23,7 +23,7 @@ void NeedMoreClassRoomForm::execute(Headmaster* p_headMaster) const {
 
 void NeedCourseCreationForm::execute(Headmaster* p_headMaster) const {
     if (isSigned() == true) {
-        p_headMaster->processNeedCourseCreation(_courseName, _professor);
+        p_headMaster->processNeedCourseCreation(_courseName, _professor, _maxStudent, _nbrGraduate);
     } else {
         std::cout << "Form is not signed." << std::endl;
     }

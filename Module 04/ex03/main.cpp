@@ -25,18 +25,13 @@ int main() {
     studentList.addToList(student);
 
     std::cout << "\n--- Professor demande la création d'un cours ---\n";
-    Form* creationForm = professor->requestCourseCreationForm("Potions", secretary);
+    Form* creationForm = professor->requestCourseCreationForm(secretary, "Potions", 30, 5);
     headmaster->receiveForm(creationForm);
     headmaster->sign(creationForm);
     creationForm->execute(headmaster);
 
     std::cout << "\n--- Student demande à s'inscrire à ce cours ---\n";
     Course* potions = CourseList::getInstance().getFromList("Potions");
-    if (!potions) {
-        std::cerr << "Erreur : le cours Potions n'existe pas." << std::endl;
-        return 1;
-    }
-
     Form* subscriptionForm = student->requestSubscriptionToCourseForm(potions, secretary);
     headmaster->receiveForm(subscriptionForm);
     headmaster->sign(subscriptionForm);
@@ -48,6 +43,13 @@ int main() {
     headmaster->receiveForm(classroomRequest);
     headmaster->sign(classroomRequest);
     classroomRequest->execute(headmaster);
+
+    std::cout << "\n--- Vérification des étudiants sans cours ---\n";
+    headmaster->ensureAllStudentsHasCourse();
+
+    std::cout << "\n--- Headmaster demande au professeur de faire le cours ---\n";
+    headmaster->requireProfessorToDoClass(professor);
+    std::cout << "\n--- Fin du cours ---\n";
 
     std::cout << "\n--- Vérification des salles disponibles ---\n";
     RoomList::getInstance().printList();

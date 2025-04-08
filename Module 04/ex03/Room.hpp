@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <iostream>
 
 class Person;
 class Course;
@@ -18,11 +19,14 @@ public:
 
 	long long getID() const { return ID; }
 	const std::set<Person*>& getOccupants() const { return _occupants; }
-
-	void printOccupant();
-	bool canEnter(Person* person);
-	void enter(Person* person);
-	void exit(Person* person);
+	void printOccupant() {
+		for (const auto& occupant : _occupants) {
+			std::cout << occupant->getName() << std::endl;
+		}
+	}
+	virtual bool canEnter(Person* person) { return true; }
+	void enter(Person* person) { _occupants.insert(person); }
+	void exit(Person* person) { _occupants.erase(person); }
 	
 };
 
@@ -36,6 +40,8 @@ public:
 	~Classroom() {}
 
 	void assignCourse(Course* p_course) { _currentRoom = p_course; }
+	Course* getCourse() const { return _currentRoom; }
+	bool canEnter(Person* person) override { return _currentRoom->getMaximumNumberOfStudent() > _currentRoom->getStudents().size(); }
 };
 
 class SecretarialOffice: public Room

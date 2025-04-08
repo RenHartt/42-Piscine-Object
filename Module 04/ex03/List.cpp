@@ -30,7 +30,7 @@ void CourseList::printItem(Course* item) {
 
 void RoomList::printItem(Room* item) {
     std::cout << "Room ID: " << item->getID() << std::endl;
-    std::cout << "Occupants: ";
+    std::cout << "Occupants: "; 
     if (item->getOccupants().empty()) {
         std::cout << "None" << std::endl;
     } else {
