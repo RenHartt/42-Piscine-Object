@@ -1,13 +1,14 @@
 #include "Form.hpp"
 #include "Course.hpp"
-#include "Person.hpp"
 #include "Room.hpp"
-
-#include <iostream>
+#include "Person.hpp"
 
 void CourseFinishedForm::execute() const {
     if (isSigned() == true) {
-        std::cout << "Course " << _course->getName() << " has finished." << std::endl;
+        std::cout << "Course finished for " << _course->getName() << std::endl;
+        for (auto student : _course->getStudents()) {
+            student->graduate(_course);
+        }
     } else {
         std::cout << "Form is not signed." << std::endl;
     }
@@ -15,7 +16,8 @@ void CourseFinishedForm::execute() const {
 
 void NeedMoreClassRoomForm::execute() const {
     if (isSigned() == true) {
-        std::cout << "Need more class room for course " << _course->getName() << "." << std::endl;
+        std::cout << "Need more classroom for " << _course->getName() << std::endl;
+        new Classroom(_course);
     } else {
         std::cout << "Form is not signed." << std::endl;
     }
@@ -23,15 +25,18 @@ void NeedMoreClassRoomForm::execute() const {
 
 void NeedCourseCreationForm::execute() const {
     if (isSigned() == true) {
-        std::cout << "Need course creation for course " << _courseName << " with professor " << _professor->getName() << "." << std::endl;
+        std::cout << "Course created: " << _courseName << std::endl;
+        _professor->assignCourse(new Course(_courseName, _professor, _numberOfClassToGraduate, _maximumNumberOfStudent));
     } else {
         std::cout << "Form is not signed." << std::endl;
     }
 }
 
 void SubscriptionToCourseForm::execute() const {
+
     if (isSigned() == true) {
-        std::cout << "Student " << _student->getName() << " has subscribed to course " << _course->getName() << "." << std::endl;
+        std::cout << "Student " << _student->getName() << " subscribed to course " << _course->getName() << std::endl;
+        _course->subscribe(_student);
     } else {
         std::cout << "Form is not signed." << std::endl;
     }

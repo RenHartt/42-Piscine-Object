@@ -4,37 +4,53 @@
 #include "Room.hpp"
 
 void StudentList::printItem(Student* item) {
-    std::cout << item->getName() << std::endl;
+    std::cout << " - " << item->getName() << std::endl;
 }
 
 void StaffList::printItem(Staff* item) {
-    std::cout << item->getName() << std::endl;
+    std::cout << " - " << item->getName() << std::endl;
 }
 
 void CourseList::printItem(Course* item) {
-    std::cout << item->getName() << std::endl;
+    std::cout << " - " << item->getName() << std::endl;
     if (item->getProfessor() == nullptr) {
         std::cout << "Professor: None" << std::endl;
     } else {
-        std::cout << "Professor: " << item->getProfessor()->getName() << std::endl;
+        std::cout << "Professor -> " << item->getProfessor()->getName() << std::endl;
     }
     if (item->getStudents().empty()) {
-        std::cout << "Student: None" << std::endl;
+        std::cout << "Student:" << std::endl;
+        std::cout << "None" << std::endl;
     } else {
         std::cout << "Students: " << std::endl;
         for (const auto& student : item->getStudents()) {
-            std::cout << student->getName() << std::endl;
+            std::cout << " - " << student->getName() << std::endl;
         }
     }
 }
 
 void RoomList::printItem(Room* item) {
-    std::cout << "Room ID: " << item->getID() << std::endl;
-    std::cout << "Occupants: ";
-    if (item->getOccupants().empty()) {
-        std::cout << "None" << std::endl;
+    long long roomId = item->getID();
+    if (Classroom* classroom = dynamic_cast<Classroom*>(item)) {
+        std::cout << " - Classroom [" << roomId << "]" << std::endl;
+        if (classroom->getCurrentCourse() == nullptr) {
+            std::cout << "Current Course: None" << std::endl;
+        } else {
+            std::cout << "Current Course -> " << classroom->getCurrentCourse()->getName() << std::endl;
+        }
+    } else if (SecretarialOffice* office = dynamic_cast<SecretarialOffice*>(item)) {
+        std::cout << " - Secretarial Office [" << roomId << "]" << std::endl;
+    } else if (HeadmasterOffice* office = dynamic_cast<HeadmasterOffice*>(item)) {
+        std::cout << " - Headmaster Office [" << roomId << "]" << std::endl;
     } else {
-        std::cout << std::endl;
-        item->printOccupant();
+        std::cout << " - Room [" << roomId << "]" << std::endl;
+    }
+    if (item->getOccupants().empty()) {
+        std::cout << "Occupants: None" << std::endl;
+    } else {
+        std::cout << "Occupants: " << std::endl;
+        for (const auto& occupant : item->getOccupants()) {
+            std::cout << " - " << occupant->getName() << std::endl;
+        }
     }
 }

@@ -129,6 +129,7 @@ public:
 	void subscribeToCourse(Course* p_course);
 	void unsubscribeToCourse(Course* p_course);
 	bool isSubscribedToCourse(Course* p_course) const;
+	
 	std::map<Course*, int>& getSubscribedCourses();
 
 	void attendClass(Classroom* p_classroom);

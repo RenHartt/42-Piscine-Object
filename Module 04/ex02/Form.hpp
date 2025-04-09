@@ -2,9 +2,10 @@
 
 #include <string>
 
-class Course;
 class Professor;
 class Student;
+class Course;
+class Classroom;
 
 enum class FormType
 {
@@ -62,13 +63,17 @@ class NeedCourseCreationForm : public Form
 private:
 	std::string _courseName;
 	Professor* _professor;
+	int _numberOfClassToGraduate = 0;
+	int _maximumNumberOfStudent = 0;
 public:
 	NeedCourseCreationForm() : Form(FormType::NeedCourseCreation) {}
 
-	void fill(const std::string& p_courseName, Professor* p_professor)
+	void fill(const std::string& p_courseName, Professor* p_professor, int p_numberOfClassToGraduate = 0, int p_maximumNumberOfStudent = 0)
 	{
 		_courseName = p_courseName;
 		_professor = p_professor;
+		_numberOfClassToGraduate = p_numberOfClassToGraduate;
+		_maximumNumberOfStudent = p_maximumNumberOfStudent;
 	}
 	bool isFilled() const override { return !_courseName.empty() && _professor != nullptr; }
 	

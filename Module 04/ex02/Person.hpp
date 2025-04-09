@@ -5,16 +5,12 @@
 #include <memory>
 
 #include "List.hpp"
-
-class Room;
-class Course;
-class Classroom;
-class Form;
-enum class FormType;
+#include "Form.hpp"
+#include "Room.hpp"
 
 class Person
 {
-private:
+protected:
 	std::string _name;
 	Room* _currentRoom = nullptr;
 public:
@@ -28,7 +24,7 @@ public:
 
 class Staff : public Person
 {
-private:
+protected:
 
 public:
 	Staff(std::string p_name) : Person(p_name) {
@@ -48,9 +44,11 @@ public:
 	}
 	~Student() {}
 
-	void attendClass(Classroom* p_classroom);
-	void exitClass();
-	void graduate(Course* p_course);
+	void attendClass(Classroom* p_classroom) { this->_currentRoom = p_classroom; }
+	void exitClass() { this->_currentRoom = nullptr; }
+	void graduate(Course* p_course) {
+		std::cout << "Student " << _name << " graduated" << std::endl;
+	}
 };
 
 class Headmaster : public Staff
@@ -62,8 +60,18 @@ public:
 	Headmaster(std::string p_name) : Staff(p_name) {}
 	~Headmaster() {}
 
-	void receiveForm(Form* p_form);
-	void sign(Form* p_form);
+	void receiveForm(Form* p_form) { _formToValidate.insert(p_form); }
+	void sign() {
+		for (auto form : _formToValidate) {
+			if (form->isFilled()) {
+				form->sign();
+				std::cout << "Form signed by " << getName() << std::endl;
+			} else {
+				std::cout << "Form is not filled." << std::endl;
+			}
+		}
+		_formToValidate.clear();
+	}
 };
 
 class Secretary : public Staff
@@ -74,7 +82,20 @@ public:
 	Secretary(std::string p_name) : Staff(p_name) {}
 	~Secretary() {}
 
-	Form* createForm(FormType p_formType);
+	Form* createForm(FormType p_formType) {
+		switch (p_formType) {
+			case FormType::CourseFinished:
+				return new CourseFinishedForm();
+			case FormType::NeedMoreClassRoom:
+				return new NeedMoreClassRoomForm();
+			case FormType::NeedCourseCreation:
+				return new NeedCourseCreationForm();
+			case FormType::SubscriptionToCourse:
+				return new SubscriptionToCourseForm();
+			default:
+				return nullptr;
+		}
+	}
 	void archiveForm();
 };
 
@@ -87,7 +108,7 @@ public:
 	Professor(std::string p_name) : Staff(p_name) {}
 	~Professor() {}
 
-	void assignCourse(Course* p_course);
+	void assignCourse(Course* p_course) { _currentCourse = p_course; }
 	void doClass();
 	void closeCourse();
 };

@@ -34,7 +34,6 @@ public:
 	virtual bool canEnter(Person* person) { return true; }
 	void enter(Person* person) { _occupants.insert(person); }
 	void exit(Person* person) { _occupants.erase(person); }
-	
 };
 
 class Classroom : public Room

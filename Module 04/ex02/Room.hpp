@@ -10,12 +10,17 @@ class Form;
 
 class Room
 {
-private:
-	long long ID = 0;
+protected:
+	long long ID;
+	static long long _nextID;
+	static std::set<long long> _freeIDs;
 	std::set<Person*> _occupants;
 
+	long long generateID();
+	void freeID(long long id);
+
 public:
-	Room(long long p_id = 0) : ID(p_id) {
+	Room() : ID(generateID()) {
 		RoomList::getInstance().addToList(this);
 	}
     virtual ~Room() {}
@@ -23,10 +28,11 @@ public:
 	long long getID() const { return ID; }
 	const std::set<Person*>& getOccupants() const { return _occupants; }
 
-	void printOccupant();
-	bool canEnter(Person* person);
-	void enter(Person* person);
-	void exit(Person* person);
+	void printOccupant() const ;
+
+	bool canEnter(Person* person) { return true; }
+	void enter(Person* person) { if (canEnter(person)) { _occupants.insert(person); } }
+	void exit(Person* person) { _occupants.erase(person); }
 	
 };
 
@@ -39,7 +45,9 @@ public:
 	Classroom(Course* p_course = nullptr) : _currentRoom(p_course) {}
 	~Classroom() {}
 
-	void assignCourse(Course* p_course);
+	const Course* getCurrentCourse() const { return _currentRoom; }
+
+	void assignCourse(Course* p_course) { _currentRoom = p_course; }
 };
 
 class SecretarialOffice: public Room
