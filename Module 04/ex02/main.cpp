@@ -9,23 +9,12 @@
 #include "Room.hpp"
 
 int main() {
-    auto& staffList = StaffList::getInstance();
-    auto& studentList = StudentList::getInstance();
-    auto& courseList = CourseList::getInstance();
-    auto& roomList = RoomList::getInstance();
-
     auto headmaster = new Headmaster("Headmaster");
     auto secretary = new Secretary("Secretary");
     auto professor = new Professor("Professor");
     auto student = new Student("Student");
     auto course = new Course("Math");
     
-    staffList.addToList(headmaster);
-    staffList.addToList(secretary);
-    staffList.addToList(professor);
-    studentList.addToList(student);
-    courseList.addToList(course);
-
     Form* courseFinishedForm = secretary->createForm(FormType::CourseFinished);
     Form* needMoreClassRoomForm = secretary->createForm(FormType::NeedMoreClassRoom);
     Form* needCourseCreationForm = secretary->createForm(FormType::NeedCourseCreation);

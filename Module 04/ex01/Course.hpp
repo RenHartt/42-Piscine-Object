@@ -3,6 +3,8 @@
 #include <string>
 #include <set>
 
+#include "List.hpp"
+
 class Professor;
 class Student;
 
@@ -16,7 +18,9 @@ private:
     int _maximumNumberOfStudent;
 
 public:
-    Course(std::string p_name) : _name(p_name) {}
+    Course(std::string p_name) : _name(p_name) {
+        CourseList::getInstance().addToList(this);
+    }
     ~Course() {}
 
     const std::string& getName() const { return _name; }

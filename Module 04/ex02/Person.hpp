@@ -4,6 +4,8 @@
 #include <set>
 #include <memory>
 
+#include "List.hpp"
+
 class Room;
 class Course;
 class Classroom;
@@ -29,7 +31,9 @@ class Staff : public Person
 private:
 
 public:
-	Staff(std::string p_name) : Person(p_name) {}
+	Staff(std::string p_name) : Person(p_name) {
+		StaffList::getInstance().addToList(this);
+	}
 	virtual ~Staff() {}
 };
 
@@ -39,7 +43,9 @@ private:
 	std::set<Course*> _subscribedCourse;
 
 public:
-	Student(std::string p_name) : Person(p_name) {}
+	Student(std::string p_name) : Person(p_name) {
+		StudentList::getInstance().addToList(this);
+	}
 	~Student() {}
 
 	void attendClass(Classroom* p_classroom);

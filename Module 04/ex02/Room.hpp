@@ -2,6 +2,8 @@
 
 #include <set>
 
+#include "List.hpp"
+
 class Person;
 class Course;
 class Form;
@@ -13,7 +15,9 @@ private:
 	std::set<Person*> _occupants;
 
 public:
-	Room(long long p_id = 0) : ID(p_id) {}
+	Room(long long p_id = 0) : ID(p_id) {
+		RoomList::getInstance().addToList(this);
+	}
     virtual ~Room() {}
 
 	long long getID() const { return ID; }
