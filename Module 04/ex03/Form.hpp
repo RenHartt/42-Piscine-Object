@@ -2,10 +2,10 @@
 
 #include <string>
 
-class Course;
 class Professor;
 class Student;
-class Headmaster;
+class Course;
+class Classroom;
 
 enum class FormType
 {
@@ -29,33 +29,41 @@ public:
 	void sign() { _isSigned = true; }
 
 	virtual bool isFilled() const = 0;
-	virtual void execute(Headmaster* p_headMaster) const = 0;
+	virtual void execute() const = 0;
 };
 
 class CourseFinishedForm : public Form
 {
 private:
+	Student* _student;
 	Course* _course;
 public:
 	CourseFinishedForm() : Form(FormType::CourseFinished) {}
 
-	void fill(Course* p_course) { _course = p_course; }
-	bool isFilled() const override { return _course != nullptr; }
+	void fill(Student* p_student, Course* p_course) {
+		_student = p_student;
+		_course = p_course;
+	}
+	bool isFilled() const override { return _student != nullptr &&_course != nullptr; }
 	
-	void execute(Headmaster* p_headMaster) const override;
+	void execute() const override;
 };
 
 class NeedMoreClassRoomForm : public Form
 {
 private:
+	Professor* _professor;
 	Course* _course;
 public:
 	NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
 
-	void fill(Course* p_course) { _course = p_course; }
-	bool isFilled() const override { return _course != nullptr; }
+	void fill(Course* p_course, Professor* p_professor) {
+		_professor = p_professor;
+		_course = p_course;
+	}
+	bool isFilled() const override { return _course != nullptr && _professor != nullptr; }
 	
-	void execute(Headmaster* p_headMaster) const override;
+	void execute() const override;
 };
 
 class NeedCourseCreationForm : public Form
@@ -63,21 +71,21 @@ class NeedCourseCreationForm : public Form
 private:
 	std::string _courseName;
 	Professor* _professor;
-	int _maxStudent;
-	int _nrequiredClassesToGraduate;
+	int _numberOfClassToGraduate = 0;
+	int _maximumNumberOfStudent = 0;
 public:
 	NeedCourseCreationForm() : Form(FormType::NeedCourseCreation) {}
 
-	void fill(const std::string& p_courseName, Professor* p_professor, int p_maxStudent, int p_nrequiredClassesToGraduate)
+	void fill(const std::string& p_courseName, Professor* p_professor, int p_numberOfClassToGraduate = 0, int p_maximumNumberOfStudent = 0)
 	{
 		_courseName = p_courseName;
 		_professor = p_professor;
-		_maxStudent = p_maxStudent;
-		_nrequiredClassesToGraduate = p_nrequiredClassesToGraduate;
+		_numberOfClassToGraduate = p_numberOfClassToGraduate;
+		_maximumNumberOfStudent = p_maximumNumberOfStudent;
 	}
 	bool isFilled() const override { return !_courseName.empty() && _professor != nullptr; }
 	
-	void execute(Headmaster* p_headMaster) const override;
+	void execute() const override;
 };
 
 class SubscriptionToCourseForm : public Form
@@ -95,5 +103,5 @@ public:
 	}
 	bool isFilled() const override { return _student != nullptr && _course != nullptr; }
 	
-	void execute(Headmaster* p_headMaster) const override;
+	void execute() const override;
 };

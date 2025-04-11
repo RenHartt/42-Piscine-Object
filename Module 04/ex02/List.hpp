@@ -57,21 +57,21 @@ public:
 };
 
 class StudentList : public List<Student>, public Singleton<StudentList> {
-protected:
+public:
     void printItem(Student* item) override;
 };
 
 class StaffList : public List<Staff>, public Singleton<StaffList> {
-protected:
+public:
     void printItem(Staff* item) override;
 };
 
 class CourseList : public List<Course>, public Singleton<CourseList> {
-protected:
+public:
     void printItem(Course* item) override;
 };
 
 class RoomList : public List<Room>, public Singleton<RoomList> {
-protected:
+public:
     void printItem(Room* item) override;
 };

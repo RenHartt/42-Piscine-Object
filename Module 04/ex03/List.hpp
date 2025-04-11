@@ -4,12 +4,14 @@
 #include <memory>
 #include <mutex>
 #include <iostream>
-#include <vector>
 
 #include "Singleton.hpp"
 
-class Student;
 class Staff;
+class Headmaster;
+class Secretary;
+class Professor;
+class Student;
 class Course;
 class Room;
 
@@ -39,10 +41,6 @@ public:
         list.erase(toRemove);
     }
 
-    const std::set<T*>& getList() const {
-        return list;
-    }
-
     T* getFromList(const std::string& toGet) {
         std::lock_guard<std::mutex> lock(mtx);
         for (const auto& item : list) {
@@ -53,6 +51,10 @@ public:
         return nullptr;
     }
 
+    const std::set<T*>& getList() const {
+        return list;
+    }
+
     void printList() {
         std::lock_guard<std::mutex> lock(mtx);
         for (const auto& item : list) {
@@ -61,59 +63,26 @@ public:
     }
 };
 
+class StaffList : public List<Staff>, public Singleton<StaffList> {
+public:
+    void printItem(Staff* item) override;
+
+    Headmaster* getHeadmaster();
+    Secretary* getSecretary();
+    std::set<Professor*> getProfessors();
+};
+
 class StudentList : public List<Student>, public Singleton<StudentList> {
-protected:
+public:
     void printItem(Student* item) override;
 };
 
-class StaffList : public List<Staff>, public Singleton<StaffList> {
-protected:
-    void printItem(Staff* item) override;
-};
-
 class CourseList : public List<Course>, public Singleton<CourseList> {
-protected:
+public:
     void printItem(Course* item) override;
 };
 
-class RoomIDGenerator {
-private:
-    long long _nextId;
-    std::vector<long long> _freeIDs;
-    std::mutex mtx;
-
-public:
-    RoomIDGenerator() : _nextId(0) {}
-
-    long long generateID() {
-        std::lock_guard<std::mutex> lock(mtx);
-        if (!_freeIDs.empty()) {
-            long long id = _freeIDs.back();
-            _freeIDs.pop_back();
-            return id;
-        }
-        return _nextId++;
-    }
-
-    void releaseID(long long id) {
-        std::lock_guard<std::mutex> lock(mtx);
-        _freeIDs.push_back(id);
-    }
-};
-
 class RoomList : public List<Room>, public Singleton<RoomList> {
-private:
-    RoomIDGenerator _idGenerator;
-protected:
-    void printItem(Room* item) override;
 public:
-    RoomList() : _idGenerator() {}
-    
-    long long generateID() {
-        return _idGenerator.generateID();
-    }
-    
-    void releaseID(long long id) {
-        _idGenerator.releaseID(id);
-    }
-};  
+    void printItem(Room* item) override;
+};
