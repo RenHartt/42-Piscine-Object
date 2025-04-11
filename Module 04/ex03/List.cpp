@@ -44,12 +44,12 @@ void CourseList::printItem(Course* item) {
         std::cout << "Professor -> " << item->getProfessor()->getName() << std::endl;
     }
     if (item->getStudents().empty()) {
-        std::cout << "Student:" << std::endl;
+        std::cout << "Students:" << std::endl;
         std::cout << "None" << std::endl;
     } else {
         std::cout << "Students: " << std::endl;
         for (const auto& student : item->getStudents()) {
-            std::cout << " - " << student->getName() << std::endl;
+            std::cout << " - " << student->getName() << " -> " << student->getSubscribedCourses().at(item) << std::endl;
         }
     }
 }

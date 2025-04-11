@@ -26,10 +26,10 @@ void Room::printOccupant() const {
 
 bool Classroom::canEnter(Person* person) {
     if (_currentRoom == nullptr) {
-        return true;
-    } else if (_currentRoom->getStudents().size() < _currentRoom->getMaximumNumberOfStudent()) {
-        return true;
-    } else {
         return false;
+    } else if (this->getOccupants().size() >= _currentRoom->getMaximumNumberOfStudent()) {
+        return false;
+    } else {
+        return true;
     }
 }

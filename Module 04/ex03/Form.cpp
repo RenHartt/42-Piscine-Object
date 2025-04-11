@@ -10,7 +10,7 @@ void CourseFinishedForm::execute() const {
         _student->unsubscribe(_course);
         _course->unsubscribe(_student);
     } else {
-        std::cout << "Form is not signed." << std::endl;
+        std::cout << "[Headmaster] Form is not signed." << std::endl;
     }
 }
 
@@ -21,7 +21,7 @@ void NeedMoreClassRoomForm::execute() const {
         classroom->assignCourse(_course);
         _professor->enterRoom(classroom);
     } else {
-        std::cout << "Form is not signed." << std::endl;
+        std::cout << "[Headmaster] Form is not signed." << std::endl;
     }
 }
 
@@ -30,7 +30,7 @@ void NeedCourseCreationForm::execute() const {
         std::cout << "[Headmaster] create course " << _courseName << " for " << _professor->getName() << std::endl;
         _professor->assignCourse(new Course(_courseName, _professor, _numberOfClassToGraduate, _maximumNumberOfStudent));
     } else {
-        std::cout << "Form is not signed." << std::endl;
+        std::cout << "[Headmaster] Form is not signed." << std::endl;
     }
 }
 
@@ -41,6 +41,6 @@ void SubscriptionToCourseForm::execute() const {
         _student->subscribe(_course);
         _course->subscribe(_student);
     } else {
-        std::cout << "Form is not signed." << std::endl;
+        std::cout << "[Headmaster] Form is not signed." << std::endl;
     }
 }

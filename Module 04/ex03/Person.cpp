@@ -7,9 +7,9 @@ void Headmaster::sign() {
     for (auto form : _formToValidate) {
         if (form->isFilled()) {
             form->sign();
-            std::cout << "Form signed by " << getName() << std::endl;
+            std::cout << "[Headmaster] Form signed by " << getName() << std::endl;
         } else {
-            std::cout << "Form is not filled." << std::endl;
+            std::cout << "[Headmaster] Form is not filled." << std::endl;
         }
     }
     _formToValidate.clear();
@@ -19,6 +19,7 @@ void Headmaster::attendYourCourse() {
     std::cout << "[Headmaster] " << _name << " launch the classes." << std::endl;
     for (const auto& p : StaffList::getInstance().getProfessors()) {
         p->ensureCourse();
+        p->ensureClassroom();
     }
     for (const auto& s : StudentList::getInstance().getList()) {
         s->ensureCourse();
@@ -31,15 +32,15 @@ void Headmaster::attendYourCourse() {
 Form* Secretary::createForm(FormType p_formType) {
     switch (p_formType) {
         case FormType::CourseFinished:
-        return new CourseFinishedForm();
+            return new CourseFinishedForm();
         case FormType::NeedMoreClassRoom:
-        return new NeedMoreClassRoomForm();
+            return new NeedMoreClassRoomForm();
         case FormType::NeedCourseCreation:
-        return new NeedCourseCreationForm();
+            return new NeedCourseCreationForm();
         case FormType::SubscriptionToCourse:
-        return new SubscriptionToCourseForm();
+            return new SubscriptionToCourseForm();
         default:
-        return nullptr;
+            return nullptr;
     }
 }
 
@@ -75,27 +76,66 @@ void Professor::requestCourseFinished(Student* p_student, Course* p_course) {
 
 void Professor::ensureCourse() {
     std::cout << "[Professor] " << _name << " is ensuring course." << std::endl;
-    if (_currentCourse == nullptr) {
-        std::cout << "[Professor] " << _name << " check for course without professor." << std::endl;
-        for (const auto& course : CourseList::getInstance().getList()) {
-            if (course->getProfessor() == nullptr) {
-                std::cout << "[Professor] " << _name << " assign course " << course->getName() << std::endl;
-                assignCourse(course);
+    if (_currentCourse != nullptr) {
+        std::cout << "[Professor] " << _name << " is already assigned to a course." << std::endl;
+        return;
+    }
+
+    std::cout << "[Professor] " << _name << " check for course without professor." << std::endl;
+    for (const auto& course : CourseList::getInstance().getList()) {
+        if (course->getProfessor() == nullptr) {
+            std::cout << "[Professor] " << _name << " assign course " << course->getName() << std::endl;
+            assignCourse(course);
+            course->assign(this);
+            return;
+        }
+    }
+
+    std::cout << "[Professor] " << _name << " No available courses to assign, request a new course." << std::endl;
+    requestCourseCreation(this->_name + "_course", 5, 25);
+}
+
+void Professor::ensureClassroom() {
+    std::cout << "[Professor] " << _name << " is ensuring classroom." << std::endl;
+    if (_currentRoom != nullptr) {
+        std::cout << "[Professor] " << _name << " is already assigned to a classroom." << std::endl;
+        return;
+    }
+
+    std::cout << "[Professor] " << _name << " check for empty classroom." << std::endl;
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (Classroom* classroom = dynamic_cast<Classroom*>(room)) {
+            if (classroom->getCurrentCourse() == nullptr) {
+                std::cout << "[Professor] " << _name << " assign classroom " << room->getID() << std::endl;
+                enterRoom(classroom);
+                classroom->assignCourse(_currentCourse);
                 return;
             }
         }
-        std::cout << "No available courses to assign." << std::endl;
     }
-    if (_currentCourse == nullptr) {
-        std::cout << "[Professor] " << _name << " request a new course." << std::endl;
-        requestCourseCreation(this->_name + "_course", 2, 25); // Example course creation
-    }
+
+    std::cout << "[Professor] " << _name << " No available classrooms to assign, request a new classroom." << std::endl;
+    requestMoreClassRoom(_currentCourse);
 }
 
 void Professor::doClass() {
-    if (_currentRoom == nullptr) {
-        requestMoreClassRoom(_currentCourse);
-    }
+    // if (_currentRoom == nullptr) {
+    //     std::cout << "[Professor] " << _name << " check for empty classroom." << std::endl;
+    //     for (const auto& room : RoomList::getInstance().getList()) {
+    //         if (Classroom* classroom = dynamic_cast<Classroom*>(room)) {
+    //             if (classroom->getCurrentCourse() == nullptr) {
+    //                 std::cout << "[Professor] " << _name << " assign classroom " << room->getID() << std::endl;
+    //                 enterRoom(classroom);
+    //                 classroom->assignCourse(_currentCourse);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+    // if (_currentRoom == nullptr) {
+    //     std::cout << "[Professor] " << _name << " is requesting a classroom." << std::endl;
+    //     requestMoreClassRoom(_currentCourse);
+    // }
     
     std::set<Student*> studentToGraduate;
     std::cout << "[Professor] " << _name << " is doing class" << std::endl;
@@ -105,6 +145,14 @@ void Professor::doClass() {
             studentToGraduate.insert(s);
         }
     }
+
+    std::cout << "[Professor] " << _name << " is finishing class" << std::endl;
+    for (const auto& s : _currentCourse->getStudents()) {
+        s->exitClass();
+    }
+
+    dynamic_cast<Classroom*>(_currentRoom)->assignCourse(nullptr);
+    this->exitRoom();
 
     for (const auto& s : studentToGraduate) {
         requestCourseFinished(s, _currentCourse);
@@ -122,20 +170,19 @@ void Student::requestSubscriptionToCourse(Course* p_course) {
 }
 
 void Student::subscribe(Course* p_course) {
-    if (_subscribedCourse.find(p_course) == _subscribedCourse.end()) {
+    if (_subscribedCourse.count(p_course) == 0) {
         std::cout << "[Student] " << _name << " subscribed to course " << p_course->getName() << std::endl;
         _subscribedCourse[p_course] = p_course->getNumberOfClassToGraduate();
     } else {
-        std::cout << "Already subscribed to course " << p_course->getName() << std::endl;
+        std::cout << "[Student] " << _name << " Already subscribed to course " << p_course->getName() << std::endl;
     }
 }
 
 void Student::unsubscribe(Course* p_course) {
-    if (_subscribedCourse.find(p_course) != _subscribedCourse.end()) {
+    if (_subscribedCourse.erase(p_course)) {
         std::cout << "[Student] " << _name << " unsubscribed from course " << p_course->getName() << std::endl;
-        _subscribedCourse.erase(p_course);
     } else {
-        std::cout << "Not subscribed to course " << p_course->getName() << std::endl;
+        std::cout << "[Student] " << _name << " Not subscribed to course " << p_course->getName() << std::endl;
     }
 }
 
@@ -148,7 +195,7 @@ void Student::ensureCourse() {
                 return;
             }
         }
-        std::cout << "No available courses to subscribe." << std::endl;
+        std::cout << "[Student] " << _name << " No available courses to subscribe." << std::endl;
     } 
 }
 

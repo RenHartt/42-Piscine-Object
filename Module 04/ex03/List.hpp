@@ -24,7 +24,7 @@ protected:
     virtual void printItem(T* item) = 0;
 
 public:
-    virtual ~List() {
+    ~List() {
         for (const auto& item : list) {
             delete item;
         }

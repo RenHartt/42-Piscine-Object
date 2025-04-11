@@ -71,10 +71,6 @@ class Professor : public Staff
 private:
 	Course* _currentCourse = nullptr;
 
-	void requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent);
-	void requestMoreClassRoom(Course* p_course);
-	void requestCourseFinished(Student* p_student, Course* p_course);
-	
 public:
 	Professor(std::string p_name) : Staff(p_name) {}
 	~Professor() {}
@@ -82,7 +78,12 @@ public:
 	Course* getCourse() const { return _currentCourse; }
 	void assignCourse(Course* p_course) { _currentCourse = p_course; }
 
+	void requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent);
+	void requestMoreClassRoom(Course* p_course);
+	void requestCourseFinished(Student* p_student, Course* p_course);
+
 	void ensureCourse();
+	void ensureClassroom();
 	void doClass();
 	void closeCourse();
 };
