@@ -7,39 +7,33 @@
 
 class Professor;
 class Student;
-class Classroom;
 
-class Course {
+class Course
+{
 private:
     std::string _name;
-    Classroom* _classroom = nullptr;
     Professor* _responsable = nullptr;
     std::set<Student*> _students;
-    int _requiredClassesToGraduate;
-    int _maxStudent;
+    int _numberOfClassToGraduate;
+    int _maximumNumberOfStudent;
 
 public:
-    Course(const std::string& name, int maxStudent, int requiredClassesToGraduate)
-    : _name(name), _maxStudent(maxStudent), _requiredClassesToGraduate(requiredClassesToGraduate) {
+    Course(std::string p_name, Professor* _responsable = nullptr, int p_numberOfClassToGraduate = 0, int p_maximumNumberOfStudent = 0):
+        _name(p_name), 
+        _responsable(_responsable),
+        _numberOfClassToGraduate(p_numberOfClassToGraduate), 
+        _maximumNumberOfStudent(p_maximumNumberOfStudent) {
         CourseList::getInstance().addToList(this);
     }
     ~Course() {}
 
     const std::string& getName() const { return _name; }
-
-    Professor* getProfessor() const { return _responsable; }
-    void assignProfessor(Professor* professor) { _responsable = professor; }
-    void removeProfessor() { _responsable = nullptr; }
-
+    const Professor* getProfessor() const { return _responsable; }
     const std::set<Student*>& getStudents() const { return _students; }
-    void addStudent(Student* student) { _students.insert(student); }
-    void removeStudent(Student* student) { _students.erase(student); }
-    bool isStudentSubscribed(Student* student) const { return _students.count(student) > 0; }
+    const int getNumberOfClassToGraduate() const { return _numberOfClassToGraduate; }
+    const int getMaximumNumberOfStudent() const { return _maximumNumberOfStudent; }
 
-    Classroom* getClassroom() const { return _classroom; }
-    void assignClassroom(Classroom* classroom) { _classroom = classroom; }
-    void removeClassroom() { _classroom = nullptr; }
-
-    int requiredClassesToGraduate() const { return _requiredClassesToGraduate; }
-    int maximumStudents() const { return _maxStudent; }
+    void assign(Professor* p_professor) { _responsable = p_professor; }
+    void subscribe(Student* p_student) { _students.insert(p_student); }
+    void unsubscribe(Student* p_student) { _students.erase(p_student); }
 };

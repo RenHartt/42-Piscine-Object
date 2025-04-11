@@ -119,24 +119,6 @@ void Professor::ensureClassroom() {
 }
 
 void Professor::doClass() {
-    // if (_currentRoom == nullptr) {
-    //     std::cout << "[Professor] " << _name << " check for empty classroom." << std::endl;
-    //     for (const auto& room : RoomList::getInstance().getList()) {
-    //         if (Classroom* classroom = dynamic_cast<Classroom*>(room)) {
-    //             if (classroom->getCurrentCourse() == nullptr) {
-    //                 std::cout << "[Professor] " << _name << " assign classroom " << room->getID() << std::endl;
-    //                 enterRoom(classroom);
-    //                 classroom->assignCourse(_currentCourse);
-    //                 break;
-    //             }
-    //         }
-    //     }
-    // }
-    // if (_currentRoom == nullptr) {
-    //     std::cout << "[Professor] " << _name << " is requesting a classroom." << std::endl;
-    //     requestMoreClassRoom(_currentCourse);
-    // }
-    
     std::set<Student*> studentToGraduate;
     std::cout << "[Professor] " << _name << " is doing class" << std::endl;
     for (const auto& s : _currentCourse->getStudents()) {
