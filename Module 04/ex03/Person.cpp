@@ -29,6 +29,18 @@ void Headmaster::attendYourCourse() {
     }
 }
 
+void Headmaster::finishYourCourse() {
+    std::cout << "[Headmaster] " << _name << " finish the classes." << std::endl;
+    for (const auto& p : StaffList::getInstance().getProfessors()) {
+        p->closeCourse();
+    }
+}
+
+
+Form* Headmaster::requestForm(FormType p_formType) {
+    return StaffList::getInstance().getSecretary()->createForm(p_formType);
+}
+
 Form* Secretary::createForm(FormType p_formType) {
     switch (p_formType) {
         case FormType::CourseFinished:
@@ -45,9 +57,9 @@ Form* Secretary::createForm(FormType p_formType) {
 }
 
 void Professor::requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent) {
-    Form* form = StaffList::getInstance().getSecretary()->createForm(FormType::NeedCourseCreation);
-    dynamic_cast<NeedCourseCreationForm*>(form)->fill(p_courseName, this, p_numberOfClassToGraduate, p_maximumNumberOfStudent);
     Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
+    Form* form = headmaster->requestForm(FormType::NeedCourseCreation);
+    dynamic_cast<NeedCourseCreationForm*>(form)->fill(p_courseName, this, p_numberOfClassToGraduate, p_maximumNumberOfStudent);
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
@@ -55,9 +67,9 @@ void Professor::requestCourseCreation(std::string p_courseName, int p_numberOfCl
 }
 
 void Professor::requestMoreClassRoom(Course* p_course) {
-    Form* form = StaffList::getInstance().getSecretary()->createForm(FormType::NeedMoreClassRoom);
-    dynamic_cast<NeedMoreClassRoomForm*>(form)->fill(p_course, this);
     Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
+    Form* form = headmaster->requestForm(FormType::NeedMoreClassRoom);
+    dynamic_cast<NeedMoreClassRoomForm*>(form)->fill(p_course, this);
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
@@ -65,9 +77,9 @@ void Professor::requestMoreClassRoom(Course* p_course) {
 }
 
 void Professor::requestCourseFinished(Student* p_student, Course* p_course) {
-    Form* form = StaffList::getInstance().getSecretary()->createForm(FormType::CourseFinished);
-    dynamic_cast<CourseFinishedForm*>(form)->fill(p_student, p_course);
     Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
+    Form* form = headmaster->requestForm(FormType::CourseFinished);
+    dynamic_cast<CourseFinishedForm*>(form)->fill(p_student, p_course);
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
@@ -119,18 +131,20 @@ void Professor::ensureClassroom() {
 }
 
 void Professor::doClass() {
-    std::set<Student*> studentToGraduate;
     std::cout << "[Professor] " << _name << " is doing class" << std::endl;
     for (const auto& s : _currentCourse->getStudents()) {
         s->attendClass(dynamic_cast<Classroom*>(_currentRoom));
+    }
+}
+
+void Professor::closeCourse() {
+    std::cout << "[Professor] " << _name << " is finishing class" << std::endl;
+    std::set<Student*> studentToGraduate;
+    for (const auto& s : _currentCourse->getStudents()) {
+        s->exitClass();
         if (s->getSubscribedCourses().at(_currentCourse) == 0) {
             studentToGraduate.insert(s);
         }
-    }
-
-    std::cout << "[Professor] " << _name << " is finishing class" << std::endl;
-    for (const auto& s : _currentCourse->getStudents()) {
-        s->exitClass();
     }
 
     dynamic_cast<Classroom*>(_currentRoom)->assignCourse(nullptr);
@@ -142,9 +156,9 @@ void Professor::doClass() {
 }
 
 void Student::requestSubscriptionToCourse(Course* p_course) {
-    Form* form = StaffList::getInstance().getSecretary()->createForm(FormType::SubscriptionToCourse);
-    dynamic_cast<SubscriptionToCourseForm*>(form)->fill(this, p_course);
     Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
+    Form* form = headmaster->requestForm(FormType::SubscriptionToCourse);
+    dynamic_cast<SubscriptionToCourseForm*>(form)->fill(this, p_course);
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();

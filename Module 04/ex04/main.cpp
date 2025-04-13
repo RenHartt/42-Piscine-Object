@@ -10,18 +10,25 @@
 
 int main() {
     Headmaster* headmaster = new Headmaster("Headmaster");
-    new Secretary("Secretary");
-    for (int i = 0; i < 10; ++i) {
-        new Professor("Professor_" + std::to_string(i));
-    }
-    for (int i = 0; i < 8; ++i) {
-        new Course("Course_" + std::to_string(i), nullptr, 5, 10);
-    }
+    Secretary* secretary = new Secretary("Secretary");
+    Professor* professor1 = new Professor("Professor");
+    Student* student1 = new Student("Student");
+    new SecretarialOffice();
+    new HeadmasterOffice();
+    new StaffRestRoom();
+    new Courtyard();
     new Classroom();
-    for (int i = 0; i < 132; ++i) {
-        new Student("Student_" + std::to_string(i));
-        headmaster->attendYourCourse();
-    }
+    new Course("Course");
+
+    headmaster->attach(professor1);
+    headmaster->attach(student1);
+    
+    headmaster->attendYourCourse();
+
+    headmaster->notify(Event::RingBell);
+    headmaster->notify(Event::RingBell);
+
+    headmaster->finishYourCourse();
 
     std::cout << "Staff List:" << std::endl;
     StaffList::getInstance().printList();

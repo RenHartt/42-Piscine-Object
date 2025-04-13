@@ -30,7 +30,7 @@ public:
 
 	void printOccupant() const ;
 
-	virtual bool canEnter(Person* person) { return true; }
+	virtual bool canEnter(Person* person) = 0;
 	void enter(Person* person) { if (canEnter(person)) { _occupants.insert(person); } }
 	void exit(Person* person) { _occupants.erase(person); }
 	
@@ -42,7 +42,7 @@ private:
 	Course* _currentRoom = nullptr;
 
 public:
-	Classroom(Course* p_course = nullptr) : _currentRoom(p_course) {}
+	Classroom(Course* p_course = nullptr) : Room(), _currentRoom(p_course) {}
 	~Classroom() {}
 
 	Course* getCurrentCourse() const { return _currentRoom; }
@@ -51,32 +51,15 @@ public:
 	void assignCourse(Course* p_course) { _currentRoom = p_course; }
 };
 
-class SecretarialOffice: public Room
-{
-private:
-	std::set<Form*> _archivedForms;
-
-public:
-	SecretarialOffice() {}
-	~SecretarialOffice() {}
-};
-
-class HeadmasterOffice : public Room
-{
-private:
-
-public:
-	HeadmasterOffice() {}
-	~HeadmasterOffice() {}
-};
-
 class StaffRestRoom : public Room
 {
 private:
 
 public:
-	StaffRestRoom() {}
+	StaffRestRoom() : Room() {}
 	~StaffRestRoom() {}
+
+	bool canEnter(Person* person) override;
 };
 
 class Courtyard : public Room
@@ -84,6 +67,31 @@ class Courtyard : public Room
 private:
 
 public:
-	Courtyard() {}
+	Courtyard() : Room() {}
 	~Courtyard() {}
+
+	bool canEnter(Person* person) override;
+};
+
+class SecretarialOffice: public Room
+{
+private:
+	std::set<Form*> _archivedForms;
+
+public:
+	SecretarialOffice() : Room() {}
+	~SecretarialOffice() {}
+
+	bool canEnter(Person* person) override;
+};
+
+class HeadmasterOffice : public Room
+{
+private:
+
+public:
+	HeadmasterOffice() : Room() {}
+	~HeadmasterOffice() {}
+
+	bool canEnter(Person* person) override;
 };

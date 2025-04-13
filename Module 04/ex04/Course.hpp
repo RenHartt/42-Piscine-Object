@@ -18,7 +18,7 @@ private:
     int _maximumNumberOfStudent;
 
 public:
-    Course(std::string p_name, Professor* _responsable = nullptr, int p_numberOfClassToGraduate = 0, int p_maximumNumberOfStudent = 0):
+    Course(std::string p_name, Professor* _responsable = nullptr, int p_numberOfClassToGraduate = 5, int p_maximumNumberOfStudent = 20):
         _name(p_name), 
         _responsable(_responsable),
         _numberOfClassToGraduate(p_numberOfClassToGraduate), 

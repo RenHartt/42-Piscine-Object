@@ -49,9 +49,12 @@ public:
 	void receiveForm(Form* p_form) {
 		_formToValidate.insert(p_form);
 	}
+
+	Form* requestForm(FormType p_formType);
 	
 	void sign();
 	void attendYourCourse();
+	void finishYourCourse();
 };
 
 class Secretary : public Staff

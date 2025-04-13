@@ -36,6 +36,52 @@ void StudentList::printItem(Student* item) {
     std::cout << " - " << item->getName() << std::endl;
 }
 
+Classroom* RoomList::getClassroom() {
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (Classroom* classroom = dynamic_cast<Classroom*>(room)) {
+            return classroom;
+        }
+    }
+    return nullptr;
+}
+
+SecretarialOffice* RoomList::getSecretarialOffice() {
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (SecretarialOffice* office = dynamic_cast<SecretarialOffice*>(room)) {
+            return office;
+        }
+    }
+    return nullptr;
+}
+
+HeadmasterOffice* RoomList::getHeadmasterOffice() {
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (HeadmasterOffice* office = dynamic_cast<HeadmasterOffice*>(room)) {
+            return office;
+        }
+    }
+    return nullptr;
+}
+
+StaffRestRoom* RoomList::getStaffRestRoom() {
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (StaffRestRoom* restRoom = dynamic_cast<StaffRestRoom*>(room)) {
+            return restRoom;
+        }
+    }
+    return nullptr;
+}  
+
+Courtyard* RoomList::getCourtyard() {
+    for (const auto& room : RoomList::getInstance().getList()) {
+        if (Courtyard* courtyard = dynamic_cast<Courtyard*>(room)) {
+            return courtyard;
+        }
+    }
+    return nullptr;
+}
+
+
 void CourseList::printItem(Course* item) {
     std::cout << " - " << item->getName() << std::endl;
     if (item->getProfessor() == nullptr) {

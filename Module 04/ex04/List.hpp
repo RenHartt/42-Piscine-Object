@@ -14,6 +14,11 @@ class Professor;
 class Student;
 class Course;
 class Room;
+class Classroom;
+class SecretarialOffice;
+class HeadmasterOffice;
+class StaffRestRoom;
+class Courtyard;
 
 template <typename T>
 class List {
@@ -84,5 +89,11 @@ public:
 
 class RoomList : public List<Room>, public Singleton<RoomList> {
 public:
+    Classroom* getClassroom();
+    SecretarialOffice* getSecretarialOffice();
+    HeadmasterOffice* getHeadmasterOffice();
+    StaffRestRoom* getStaffRestRoom();
+    Courtyard* getCourtyard();
+
     void printItem(Room* item) override;
 };

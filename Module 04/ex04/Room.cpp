@@ -33,3 +33,19 @@ bool Classroom::canEnter(Person* person) {
         return true;
     }
 }
+
+bool StaffRestRoom::canEnter(Person* person) {
+   return dynamic_cast<Staff*>(person) != nullptr;
+}
+
+bool SecretarialOffice::canEnter(Person* person) {
+    return dynamic_cast<Secretary*>(person) != nullptr;
+}
+
+bool HeadmasterOffice::canEnter(Person* person) {
+    return dynamic_cast<Headmaster*>(person) != nullptr;
+}
+
+bool Courtyard::canEnter(Person* person) {
+    return true;
+}
