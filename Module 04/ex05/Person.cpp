@@ -67,7 +67,7 @@ void Professor::requestCourseCreation(std::string p_courseName, int p_numberOfCl
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
-    delete form;
+    Secretary::getInstance().archiveForm(form);
 }
 
 void Professor::requestMoreClassRoom(Course* p_course) {
@@ -77,7 +77,7 @@ void Professor::requestMoreClassRoom(Course* p_course) {
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
-    delete form;
+    Secretary::getInstance().archiveForm(form);
 }
 
 void Professor::requestCourseFinished(Student* p_student, Course* p_course) {
@@ -87,7 +87,7 @@ void Professor::requestCourseFinished(Student* p_student, Course* p_course) {
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
-    delete form;
+    Secretary::getInstance().archiveForm(form);
 }
 
 void Professor::ensureCourse() {
@@ -143,12 +143,8 @@ void Professor::doClass() {
 
 void Professor::closeCourse() {
     std::cout << "[Professor] " << _name << " is finishing class" << std::endl;
-    std::set<Student*> studentToGraduate;
     for (const auto& s : _currentCourse->getStudents()) {
         s->exitClass();
-        if (s->getSubscribedCourses().at(_currentCourse) == 0) {
-            studentToGraduate.insert(s);
-        }
     }
 
     if (Classroom* classroom =  dynamic_cast<Classroom*>(_currentRoom)) {
@@ -160,10 +156,6 @@ void Professor::closeCourse() {
         std::cout << "[Professor] " << _name << " is exiting class " << _previousRoom->getID() << std::endl;
         classroom->assignCourse(nullptr);
         exitRoom();
-    }
-
-    for (const auto& s : studentToGraduate) {
-        requestCourseFinished(s, _currentCourse);
     }
 }
 
@@ -185,15 +177,16 @@ void Professor::startPause() {
 
 void Professor::endPause() {
     std::cout << "[Professor] " << _name << " end pause." << std::endl;
+    Room* previous = _previousRoom;
     if (dynamic_cast<StaffRestRoom*>(_currentRoom)) {
         std::cout << "[Professor] " << _name << " is exiting staff rest room." << std::endl;
         _currentRoom->exit(this);
         exitRoom();
     }
-    if (dynamic_cast<Classroom*>(_previousRoom)) {
+    if (dynamic_cast<Classroom*>(previous)) {
         std::cout << "[Professor] " << _name << " enter classroom." << std::endl;
-        _previousRoom->enter(this);
-        enterRoom(_previousRoom);
+        previous->enter(this);
+        enterRoom(previous);
     } else {
         std::cout << "[Professor] " << _name << " no classroom available." << std::endl;
     }
@@ -216,7 +209,7 @@ void Student::requestSubscriptionToCourse(Course* p_course) {
     headmaster->receiveForm(form);
     headmaster->sign();
     form->execute();
-    delete form;
+    Secretary::getInstance().archiveForm(form);
 }
 
 void Student::subscribe(Course* p_course) {
@@ -286,15 +279,16 @@ void Student::startPause() {
 
 void Student::endPause() {
     std::cout << "[Student] " << _name << " end pause." << std::endl;
+    Room* previous = _previousRoom;
     if (dynamic_cast<Courtyard*>(_currentRoom)) {
         std::cout << "[Student] " << _name << " is exiting courtyard." << std::endl;
         _currentRoom->exit(this);
         exitRoom();
     }
-    if (dynamic_cast<Classroom*>(_previousRoom)) {
+    if (dynamic_cast<Classroom*>(previous)) {
         std::cout << "[Student] " << _name << " enter classroom." << std::endl;
-        _previousRoom->enter(this);
-        enterRoom(_previousRoom);
+        previous->enter(this);
+        enterRoom(previous);
     } else {
         std::cout << "[Student] " << _name << " no classroom available." << std::endl;
     }

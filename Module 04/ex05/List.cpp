@@ -3,6 +3,7 @@
 #include "Course.hpp"
 #include "Room.hpp"
 
+
 Headmaster* StaffList::getHeadmaster() {
 	for (const auto& staff : list) {
 		if (Headmaster* h = dynamic_cast<Headmaster*>(staff))
@@ -28,12 +29,34 @@ std::set<Professor*> StaffList::getProfessors() {
     return professors;
 }
 
+StaffList::~StaffList() {
+    for (const auto& professor : getProfessors()) {
+        delete professor;
+    }
+}
+
 void StaffList::printItem(Staff* item) {
     std::cout << " - " << item->getName() << std::endl;
 }
 
+StudentList::~StudentList() {
+    for (const auto& student : getList()) {
+        delete student;
+    }
+}
+
 void StudentList::printItem(Student* item) {
     std::cout << " - " << item->getName() << std::endl;
+}
+
+std::set<Classroom*> RoomList::getClassrooms() {
+    std::set<Classroom*> classrooms;
+    for (const auto& room : list) {
+        if (Classroom* classroom = dynamic_cast<Classroom*>(room)) {
+            classrooms.insert(classroom);
+        }
+    }
+    return classrooms;
 }
 
 Classroom* RoomList::getClassroom() {
@@ -81,6 +104,11 @@ Courtyard* RoomList::getCourtyard() {
     return nullptr;
 }
 
+CourseList::~CourseList() {
+    for (const auto& course : getList()) {
+        delete course;
+    }
+}
 
 void CourseList::printItem(Course* item) {
     std::cout << " - " << item->getName() << std::endl;
@@ -97,6 +125,12 @@ void CourseList::printItem(Course* item) {
         for (const auto& student : item->getStudents()) {
             std::cout << student->getName() << " ";
         }
+    }
+}
+
+RoomList::~RoomList() {
+    for (const auto& classroom : getClassrooms()) {
+        delete classroom;
     }
 }
 
