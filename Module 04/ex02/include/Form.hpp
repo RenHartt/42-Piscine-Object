@@ -22,7 +22,7 @@ private:
 	bool _isSigned = false;
 
 public:
-	Form(FormType p_formType) : _formType(p_formType) {}
+	Form(FormType p_formType) : _formType(p_formType) { (void)_formType; }
 	virtual ~Form() {}
 
 	bool isSigned() const { return _isSigned; }
@@ -35,16 +35,12 @@ public:
 class CourseFinishedForm : public Form
 {
 private:
-	Student* _student;
 	Course* _course;
 public:
 	CourseFinishedForm() : Form(FormType::CourseFinished) {}
 
-	void fill(Student* p_student, Course* p_course) {
-		_student = p_student;
-		_course = p_course;
-	}
-	bool isFilled() const override { return _student != nullptr &&_course != nullptr; }
+	void fill(Course* p_course) { _course = p_course; }
+	bool isFilled() const override { return _course != nullptr; }
 	
 	void execute() const override;
 };
@@ -52,16 +48,12 @@ public:
 class NeedMoreClassRoomForm : public Form
 {
 private:
-	Professor* _professor;
 	Course* _course;
 public:
 	NeedMoreClassRoomForm() : Form(FormType::NeedMoreClassRoom) {}
 
-	void fill(Course* p_course, Professor* p_professor) {
-		_professor = p_professor;
-		_course = p_course;
-	}
-	bool isFilled() const override { return _course != nullptr && _professor != nullptr; }
+	void fill(Course* p_course) { _course = p_course; }
+	bool isFilled() const override { return _course != nullptr; }
 	
 	void execute() const override;
 };

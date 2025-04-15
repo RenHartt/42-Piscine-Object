@@ -14,7 +14,7 @@ private:
 	FormType _formType;
 
 public:
-	Form(FormType p_formType) : _formType(p_formType) {}
+	Form(FormType p_formType) : _formType(p_formType) { (void) _formType; }
 	virtual ~Form() {}
 
 	virtual void execute() = 0;

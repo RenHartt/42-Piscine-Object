@@ -7,6 +7,7 @@
 
 #include "List.hpp"
 #include "Event.hpp"
+#include "Observer.hpp"
 #include "Room.hpp"
 
 enum class FormType;
@@ -57,6 +58,7 @@ public:
 	
 	void attendYourCourse();
 	void finishYourCourse();
+	
 	Form* requestForm(FormType p_formType);
 	void receiveForm(Form* p_form);
 	void sign();

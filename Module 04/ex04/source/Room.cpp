@@ -24,7 +24,7 @@ void Room::printOccupant() const {
     }
 }
 
-bool Classroom::canEnter(Person* person) {
+bool Classroom::canEnter(Person*) {
     if (_currentRoom == nullptr) {
         return false;
     } else if (this->getOccupants().size() >= _currentRoom->getMaximumNumberOfStudent()) {
@@ -32,4 +32,20 @@ bool Classroom::canEnter(Person* person) {
     } else {
         return true;
     }
+}
+
+bool StaffRestRoom::canEnter(Person* person) {
+   return dynamic_cast<Staff*>(person) != nullptr;
+}
+
+bool SecretarialOffice::canEnter(Person* person) {
+    return dynamic_cast<Secretary*>(person) != nullptr;
+}
+
+bool HeadmasterOffice::canEnter(Person* person) {
+    return dynamic_cast<Headmaster*>(person) != nullptr;
+}
+
+bool Courtyard::canEnter(Person*) {
+    return true;
 }

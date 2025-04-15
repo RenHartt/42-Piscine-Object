@@ -22,7 +22,7 @@ private:
 	bool _isSigned = false;
 
 public:
-	Form(FormType p_formType) : _formType(p_formType) {}
+	Form(FormType p_formType) : _formType(p_formType) { (void)_formType; }
 	virtual ~Form() {}
 
 	bool isSigned() const { return _isSigned; }

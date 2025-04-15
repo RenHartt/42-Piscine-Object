@@ -30,7 +30,7 @@ public:
 
 	void printOccupant() const ;
 
-	bool canEnter(Person* person) { return true; }
+	virtual bool canEnter(Person*) { return true; }
 	void enter(Person* person) { if (canEnter(person)) { _occupants.insert(person); } }
 	void exit(Person* person) { _occupants.erase(person); }
 	
@@ -45,7 +45,8 @@ public:
 	Classroom(Course* p_course = nullptr) : _currentRoom(p_course) {}
 	~Classroom() {}
 
-	const Course* getCurrentCourse() const { return _currentRoom; }
+	Course* getCurrentCourse() const { return _currentRoom; }
+	bool canEnter(Person* person) override;
 
 	void assignCourse(Course* p_course) { _currentRoom = p_course; }
 };

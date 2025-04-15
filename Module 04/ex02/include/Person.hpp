@@ -46,7 +46,7 @@ public:
 
 	void attendClass(Classroom* p_classroom) { this->_currentRoom = p_classroom; }
 	void exitClass() { this->_currentRoom = nullptr; }
-	void graduate(Course* p_course) {
+	void graduate(Course*) {
 		std::cout << "Student " << _name << " graduated" << std::endl;
 	}
 };

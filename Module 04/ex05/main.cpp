@@ -2,9 +2,9 @@
 
 #include "School.hpp"
 
-#define PROFESSOR_COUNT 100
-#define STUDENT_COUNT 11000
-#define DAY_COUNT 150
+#define PROFESSOR_COUNT 10
+#define STUDENT_COUNT 110
+#define DAY_COUNT 1
 
 int main() {
     School school;

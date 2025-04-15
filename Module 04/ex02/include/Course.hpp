@@ -30,8 +30,8 @@ public:
     const std::string& getName() const { return _name; }
     const Professor* getProfessor() const { return _responsable; }
     const std::set<Student*>& getStudents() const { return _students; }
-    const int getNumberOfClassToGraduate() const { return _numberOfClassToGraduate; }
-    const int getMaximumNumberOfStudent() const { return _maximumNumberOfStudent; }
+    int getNumberOfClassToGraduate() const { return _numberOfClassToGraduate; }
+    int getMaximumNumberOfStudent() const { return _maximumNumberOfStudent; }
 
     void assign(Professor* p_professor) { _responsable = p_professor; }
     void subscribe(Student* p_student) { _students.insert(p_student); }

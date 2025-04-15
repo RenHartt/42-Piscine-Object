@@ -31,7 +31,6 @@ int main() {
         headmaster->finishYourCourse();
     }
 
-
     std::cout << "Staff List:" << std::endl;
     StaffList::getInstance().printList();
     std::cout << "Student List:" << std::endl;

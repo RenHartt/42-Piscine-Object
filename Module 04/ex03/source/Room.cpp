@@ -1,7 +1,6 @@
 #include "Room.hpp"
 #include "Person.hpp"
 #include "Course.hpp"
-#include "Form.hpp"
 
 std::set<long long> Room::_freeIDs;
 long long Room::_nextID = 1;
@@ -25,7 +24,7 @@ void Room::printOccupant() const {
     }
 }
 
-bool Classroom::canEnter(Person* person) {
+bool Classroom::canEnter(Person*) {
     if (_currentRoom == nullptr) {
         return false;
     } else if (this->getOccupants().size() >= _currentRoom->getMaximumNumberOfStudent()) {
@@ -33,26 +32,4 @@ bool Classroom::canEnter(Person* person) {
     } else {
         return true;
     }
-}
-
-bool StaffRestRoom::canEnter(Person* person) {
-   return dynamic_cast<Staff*>(person) != nullptr;
-}
-
-SecretarialOffice::~SecretarialOffice() {
-    for (const auto& form : _archivedForms) {
-        delete form;
-    }
-}
-
-bool SecretarialOffice::canEnter(Person* person) {
-    return dynamic_cast<Secretary*>(person) != nullptr;
-}
-
-bool HeadmasterOffice::canEnter(Person* person) {
-    return dynamic_cast<Headmaster*>(person) != nullptr;
-}
-
-bool Courtyard::canEnter(Person* person) {
-    return true;
 }

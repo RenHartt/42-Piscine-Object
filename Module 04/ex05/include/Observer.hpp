@@ -1,13 +1,10 @@
-#pragma once
+#pragma once 
 
-enum class Event
-{
-	RingBell
-};
+#include "Event.hpp"
 
 class Observer {
 public:
-	virtual void update(Event event) = 0;
+    virtual void update(Event event) = 0;
 };
 
 class Subject {
