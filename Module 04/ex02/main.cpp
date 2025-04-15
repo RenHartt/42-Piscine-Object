@@ -9,44 +9,44 @@
 #include "Room.hpp"
 
 int main() {
-    auto headmaster = new Headmaster("Headmaster");
-    auto secretary = new Secretary("Secretary");
-    auto professor = new Professor("Professor");
-    auto student = new Student("Student");
+    Headmaster& headmaster = Headmaster::getInstance();
+    Secretary& secretary = Secretary::getInstance();
+    Professor* professor = new Professor("Professor");
+    Student* student = new Student("Student");
 
     std::cout << "Starting simulation..." << std::endl;
 
     std::cout << std::endl;
 
-    Form* creationForm = secretary->createForm(FormType::NeedCourseCreation);
+    Form* creationForm = secretary.createForm(FormType::NeedCourseCreation);
     dynamic_cast<NeedCourseCreationForm*>(creationForm)->fill("Math", professor, 2, 25);
-    headmaster->receiveForm(creationForm);
-    headmaster->sign();
+    headmaster.receiveForm(creationForm);
+    headmaster.sign();
     creationForm->execute();
 
     std::cout << std::endl;
 
     Course* mathCourse = CourseList::getInstance().getFromList("Math");
-    Form* classRoomForm = secretary->createForm(FormType::NeedMoreClassRoom);
+    Form* classRoomForm = secretary.createForm(FormType::NeedMoreClassRoom);
     dynamic_cast<NeedMoreClassRoomForm*>(classRoomForm)->fill(mathCourse);
-    headmaster->receiveForm(classRoomForm);
-    headmaster->sign();
+    headmaster.receiveForm(classRoomForm);
+    headmaster.sign();
     classRoomForm->execute();
 
     std::cout << std::endl;
 
-    Form* subscriptionForm = secretary->createForm(FormType::SubscriptionToCourse);
+    Form* subscriptionForm = secretary.createForm(FormType::SubscriptionToCourse);
     dynamic_cast<SubscriptionToCourseForm*>(subscriptionForm)->fill(student, mathCourse);
-    headmaster->receiveForm(subscriptionForm);
-    headmaster->sign();
+    headmaster.receiveForm(subscriptionForm);
+    headmaster.sign();
     subscriptionForm->execute();
 
     std::cout << std::endl;
 
-    Form* graduationForm = secretary->createForm(FormType::CourseFinished);
+    Form* graduationForm = secretary.createForm(FormType::CourseFinished);
     dynamic_cast<CourseFinishedForm*>(graduationForm)->fill(mathCourse);
-    headmaster->receiveForm(graduationForm);
-    headmaster->sign();
+    headmaster.receiveForm(graduationForm);
+    headmaster.sign();
     graduationForm->execute();
 
     std::cout << "\n--- Staff List ---" << std::endl;

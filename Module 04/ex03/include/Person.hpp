@@ -37,14 +37,14 @@ public:
 	virtual ~Staff() {}
 };
 
-class Headmaster : public Staff
+class Headmaster : public Staff, public Singleton<Headmaster>
 {
 private:
 	std::set<Form*> _formToValidate;
 
+	Headmaster(std::string p_name = "Headmaster") : Staff(p_name) {}
 public:
-	Headmaster(std::string p_name) : Staff(p_name) {}
-	~Headmaster() {}
+	friend class Singleton<Headmaster>;
 
 	void receiveForm(Form* p_form) {
 		_formToValidate.insert(p_form);
@@ -57,13 +57,12 @@ public:
 	void finishYourCourse();
 };
 
-class Secretary : public Staff
+class Secretary : public Staff, public Singleton<Secretary>
 {
 private:
-
+	Secretary(std::string p_name = "Secretary") : Staff(p_name) {}
 public:
-	Secretary(std::string p_name) : Staff(p_name) {}
-	~Secretary() {}
+	friend class Singleton<Secretary>;
 
 	Form* createForm(FormType p_formType);
 	void archiveForm();

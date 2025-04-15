@@ -25,20 +25,24 @@ public:
 	virtual ~Person() {}
 
 	const std::string& getName() const { return _name; }
+	Room* room() { return _currentRoom; }
+
 	void enterRoom(Room* p_room) {
 		_currentRoom = p_room;
+		_currentRoom->enter(this);
 	}
+	
 	void exitRoom() {
 		_previousRoom = _currentRoom;
+		if (_currentRoom != nullptr) {
+			_currentRoom->exit(this);
+		}
 		_currentRoom = nullptr;
 	}
-	Room* room() { return _currentRoom; }
 };
 
 class Staff : public Person
 {
-protected:
-
 public:
 	Staff(std::string p_name) : Person(p_name) {
 		StaffList::getInstance().addToList(this);
@@ -50,6 +54,7 @@ class Headmaster : public Staff, public Subject, public Singleton<Headmaster>
 {
 private:
 	std::set<Form*> _formToValidate;
+	std::set<std::pair<Student*, Course*>> _studentsToGraduate;
 	std::set<Observer*> _observers;
 
 	Headmaster(std::string p_name = "Headmaster") : Staff(p_name) {}
@@ -58,6 +63,12 @@ public:
 	
 	void attendYourCourse();
 	void finishYourCourse();
+
+	void addStudentToGraduate(Student* p_student, Course* p_course) {
+		_studentsToGraduate.insert(std::make_pair(p_student, p_course));
+	}
+	void graduateStudents();
+	std::set<std::pair<Student*, Course*>> getStudentsToGraduate() const { return _studentsToGraduate; }
 	
 	Form* requestForm(FormType p_formType);
 	void receiveForm(Form* p_form);
@@ -93,7 +104,6 @@ private:
 	std::map<Course*, int> _subscribedCourse;
 
 	void requestSubscriptionToCourse(Course* p_course);
-
 public:
 	Student(std::string p_name) : Person(p_name) {
 		StudentList::getInstance().addToList(this);
@@ -110,6 +120,8 @@ public:
 
 	void startPause();
 	void endPause();
+	void startLunchBreak();
+	void endLunchBreak();
 	void update(Event p_event) override;
 };
 
@@ -118,15 +130,14 @@ class Professor : public Staff, public Observer
 private:
 	Course* _currentCourse = nullptr;
 
+	void requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent);
+	void requestMoreClassRoom(Course* p_course);
+	void requestCourseFinished(Student* p_student, Course* p_course);
 public:
 	Professor(std::string p_name) : Staff(p_name) {}
 
 	Course* getCourse() const { return _currentCourse; }
 	void assignCourse(Course* p_course) { _currentCourse = p_course; }
-
-	void requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent);
-	void requestMoreClassRoom(Course* p_course);
-	void requestCourseFinished(Student* p_student, Course* p_course);
 
 	void ensureCourse();
 	void ensureClassroom();
@@ -135,5 +146,7 @@ public:
 
 	void startPause();
 	void endPause();
+	void startLunchBreak();
+	void endLunchBreak();
 	void update(Event p_event) override;
 };

@@ -51,47 +51,43 @@ public:
 	void assignCourse(Course* p_course) { _currentRoom = p_course; }
 };
 
-class StaffRestRoom : public Room
+class StaffRestRoom : public Room, public Singleton<StaffRestRoom>
 {
 private:
-
-public:
 	StaffRestRoom() : Room() {}
-	~StaffRestRoom() {}
+public:
+	friend class Singleton<StaffRestRoom>;
 
 	bool canEnter(Person* person) override;
 };
 
-class Courtyard : public Room
+class Courtyard : public Room, public Singleton<Courtyard>
 {
 private:
-
-public:
 	Courtyard() : Room() {}
-	~Courtyard() {}
+public:
+	friend class Singleton<Courtyard>;
 
 	bool canEnter(Person* person) override;
 };
 
-class SecretarialOffice: public Room
+class SecretarialOffice: public Room, public Singleton<SecretarialOffice>
 {
 private:
 	std::set<Form*> _archivedForms;
-
-public:
 	SecretarialOffice() : Room() {}
-	~SecretarialOffice() {}
+public:
+	friend class Singleton<SecretarialOffice>;
 
 	bool canEnter(Person* person) override;
 };
 
-class HeadmasterOffice : public Room
+class HeadmasterOffice : public Room, public Singleton<HeadmasterOffice>
 {
 private:
-
-public:
 	HeadmasterOffice() : Room() {}
-	~HeadmasterOffice() {}
+public:
+	friend class Singleton<HeadmasterOffice>;
 
 	bool canEnter(Person* person) override;
 };

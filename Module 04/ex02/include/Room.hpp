@@ -50,39 +50,36 @@ public:
 	void assignCourse(Course* p_course) { _currentRoom = p_course; }
 };
 
-class SecretarialOffice: public Room
+class SecretarialOffice: public Room, public Singleton<SecretarialOffice>
 {
 private:
 	std::set<Form*> _archivedForms;
 
-public:
 	SecretarialOffice() {}
-	~SecretarialOffice() {}
+public:
+	friend class Singleton<SecretarialOffice>;
 };
 
-class HeadmasterOffice : public Room
+class HeadmasterOffice : public Room, public Singleton<HeadmasterOffice>
 {
 private:
-
-public:
 	HeadmasterOffice() {}
-	~HeadmasterOffice() {}
+public:
+	friend class Singleton<HeadmasterOffice>;
 };
 
-class StaffRestRoom : public Room
+class StaffRestRoom : public Room, public Singleton<StaffRestRoom>
 {
 private:
-
-public:
 	StaffRestRoom() {}
-	~StaffRestRoom() {}
+public:
+	friend class Singleton<StaffRestRoom>;
 };
 
-class Courtyard : public Room
+class Courtyard : public Room, public Singleton<Courtyard>
 {
 private:
-
-public:
 	Courtyard() {}
-	~Courtyard() {}
+public:
+	friend class Singleton<Courtyard>;
 };

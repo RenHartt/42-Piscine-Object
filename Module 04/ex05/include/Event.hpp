@@ -2,5 +2,6 @@
 
 enum class Event
 {
-	RingBell
+	RingBell,
+	LunchBreak
 };

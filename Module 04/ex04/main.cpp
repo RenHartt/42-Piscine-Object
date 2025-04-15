@@ -9,33 +9,30 @@
 #include "Room.hpp"
 
 int main() {
-    new SecretarialOffice();
-    new HeadmasterOffice();
-    new StaffRestRoom();
-    new Courtyard();
     new Classroom();
-    Headmaster* headmaster = new Headmaster("Headmaster");
-    new Secretary("Secretary");
+    Courtyard::getInstance();
+    StaffRestRoom::getInstance();
+    Headmaster& headmaster = Headmaster::getInstance();
     Professor* professor1 = new Professor("Professor");
     Student* student1 = new Student("Student");
     new Course("Course");
 
-    headmaster->attach(professor1);
-    headmaster->attach(student1);
+    headmaster.attach(professor1);
+    headmaster.attach(student1);
 
     for (int i = 0; i < 10; ++i) {
-        headmaster->attendYourCourse();
+        headmaster.attendYourCourse();
 
-        headmaster->notify(Event::RingBell);
-        headmaster->notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
         
-        headmaster->notify(Event::RingBell);
-        headmaster->notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
 
-        headmaster->notify(Event::RingBell);
-        headmaster->notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
+        headmaster.notify(Event::RingBell);
 
-        headmaster->finishYourCourse();
+        headmaster.finishYourCourse();
     }
 
     return 0;

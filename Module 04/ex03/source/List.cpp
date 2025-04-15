@@ -3,6 +3,12 @@
 #include "Course.hpp"
 #include "Room.hpp"
 
+StaffList::~StaffList() {
+    for (const auto& professor : getProfessors()) {
+        delete professor;
+    }
+}
+
 Headmaster* StaffList::getHeadmaster() {
 	for (const auto& staff : list) {
 		if (Headmaster* h = dynamic_cast<Headmaster*>(staff))
@@ -32,8 +38,20 @@ void StaffList::printItem(Staff* item) {
     std::cout << " - " << item->getName() << std::endl;
 }
 
+StudentList::~StudentList() {
+    for (const auto& student : getList()) {
+        delete student;
+    }
+}
+
 void StudentList::printItem(Student* item) {
     std::cout << " - " << item->getName() << std::endl;
+}
+
+CourseList::~CourseList() {
+    for (const auto& course : getList()) {
+        delete course;
+    }
 }
 
 void CourseList::printItem(Course* item) {
@@ -51,6 +69,12 @@ void CourseList::printItem(Course* item) {
         for (const auto& student : item->getStudents()) {
             std::cout << " - " << student->getName() << " -> " << student->getSubscribedCourses().at(item) << std::endl;
         }
+    }
+}
+
+RoomList::~RoomList() {
+    for (const auto& room : getList()) {
+        delete room;
     }
 }
 

@@ -7,10 +7,12 @@
 
 #include "Singleton.hpp"
 
+class Professor;
 class Student;
 class Staff;
 class Course;
 class Room;
+class Classroom;
 
 template <typename T>
 class List {
@@ -21,12 +23,7 @@ protected:
     virtual void printItem(T* item) = 0;
 
 public:
-    virtual ~List() {
-        for (const auto& item : list) {
-            delete item;
-        }
-        list.clear();
-    }
+    virtual ~List() {}
     
     void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -58,20 +55,32 @@ public:
 
 class StudentList : public List<Student>, public Singleton<StudentList> {
 public:
+    ~StudentList();
+
     void printItem(Student* item) override;
 };
 
 class StaffList : public List<Staff>, public Singleton<StaffList> {
+private:
+    std::set<Professor*> getProfessors();
 public:
+    ~StaffList();
+
     void printItem(Staff* item) override;
 };
 
 class CourseList : public List<Course>, public Singleton<CourseList> {
 public:
+    ~CourseList();
+
     void printItem(Course* item) override;
 };
 
 class RoomList : public List<Room>, public Singleton<RoomList> {
+private:
+    std::set<Classroom*> getClassrooms();
 public:
+    ~RoomList();
+
     void printItem(Room* item) override;
 };

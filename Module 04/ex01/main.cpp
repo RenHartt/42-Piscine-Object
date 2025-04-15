@@ -9,8 +9,8 @@
 #include "Room.hpp"
 
 int main() {
-    new Headmaster("Headmaster");
-    new Secretary("Secretary");
+    Headmaster::getInstance();
+    Secretary::getInstance();
     new Professor("Professor1");
     new Professor("Professor2");
     new Student("Student1");
@@ -19,9 +19,10 @@ int main() {
     new Course("Course2");
     new Classroom();
     new Classroom();
-    new SecretarialOffice();
-    new HeadmasterOffice();
-    new StaffRestRoom();
+    SecretarialOffice::getInstance();
+    HeadmasterOffice::getInstance();
+    Courtyard::getInstance();
+    StaffRestRoom::getInstance();
 
     std::cout << "Staff List:" << std::endl;
     StaffList::getInstance().printList();

@@ -3,6 +3,11 @@
 #include "Course.hpp"
 #include "Room.hpp"
 
+StaffList::~StaffList() {
+    for (const auto& professor : getProfessors()) {
+        delete professor;
+    }
+}
 
 Headmaster* StaffList::getHeadmaster() {
 	for (const auto& staff : list) {
@@ -27,12 +32,6 @@ std::set<Professor*> StaffList::getProfessors() {
             professors.insert(p);
     }
     return professors;
-}
-
-StaffList::~StaffList() {
-    for (const auto& professor : getProfessors()) {
-        delete professor;
-    }
 }
 
 void StaffList::printItem(Staff* item) {

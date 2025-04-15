@@ -45,15 +45,13 @@ public:
 
     void recruteProfessor() {
         std::string name = "Professor" + std::to_string(_professorCount++);
-        Professor* professor = new Professor(name);
-        _headmaster->attach(professor);
+        _headmaster->attach(new Professor(name));
         std::cout << "[School] Recruited professor " << name << std::endl;
     }
 
     void recruteStudent() {
         std::string name = "Student" + std::to_string(_studentCount++);
-        Student* student = new Student(name);
-        _headmaster->attach(student);
+        _headmaster->attach(new Student(name));
         std::cout << "[School] Recruited student " << name << std::endl;
     }
  
@@ -64,14 +62,14 @@ public:
 
         launchClasses();
         
-        requestRingBell();
-        requestRingBell();
+        requestRingBell(Event::RingBell);
+        requestRingBell(Event::RingBell);
 
-        requestRingBell();
-        requestRingBell();
+        requestRingBell(Event::LunchBreak);
+        requestRingBell(Event::LunchBreak);
 
-        requestRingBell();
-        requestRingBell();
+        requestRingBell(Event::RingBell);
+        requestRingBell(Event::RingBell);
 
         _headmaster->finishYourCourse();
         
@@ -82,15 +80,14 @@ public:
         std::cout << "[School] Day routine finished." << std::endl;
     }
     void launchClasses() { _headmaster->attendYourCourse(); }
-    void requestRingBell() { _headmaster->notify(Event::RingBell); }
+    void requestRingBell(Event p_event) { _headmaster->notify(p_event); }
     void graduationCeremony() {
-        std::cout << "[School] Graduation ceremony!" << std::endl;
-        for (const auto& student : _studentList->getList()) {
-            for (const auto& course : student->getSubscribedCourses()) {
-                if (course.second <= 0) {
-                    std::cout << "[School] " << student->getName() << " graduated from " << course.first->getName() << std::endl;
-                }
-            }
+        Headmaster& headmaster = Headmaster::getInstance();
+        if (headmaster.getStudentsToGraduate().empty()) {
+            return;
+        } else {
+            std::cout << "[School] Graduation ceremony!" << std::endl;
+            headmaster.graduateStudents();
         }
     }
 };

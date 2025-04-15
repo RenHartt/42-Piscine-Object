@@ -29,12 +29,7 @@ protected:
     virtual void printItem(T* item) = 0;
 
 public:
-    ~List() {
-        for (const auto& item : list) {
-            delete item;
-        }
-        list.clear();
-    }
+    virtual ~List() {}
     
     void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -70,6 +65,8 @@ public:
 
 class StaffList : public List<Staff>, public Singleton<StaffList> {
 public:
+    ~StaffList();
+
     void printItem(Staff* item) override;
 
     Headmaster* getHeadmaster();
@@ -79,16 +76,23 @@ public:
 
 class StudentList : public List<Student>, public Singleton<StudentList> {
 public:
+    ~StudentList();
+
     void printItem(Student* item) override;
 };
 
 class CourseList : public List<Course>, public Singleton<CourseList> {
 public:
+    ~CourseList();
+
     void printItem(Course* item) override;
 };
 
 class RoomList : public List<Room>, public Singleton<RoomList> {
 public:
+    ~RoomList();
+
+    std::set<Classroom*> getClassrooms();
     Classroom* getClassroom();
     SecretarialOffice* getSecretarialOffice();
     HeadmasterOffice* getHeadmasterOffice();

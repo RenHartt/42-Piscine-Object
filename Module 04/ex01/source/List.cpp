@@ -3,12 +3,43 @@
 #include "Course.hpp"
 #include "Room.hpp"
 
+StudentList::~StudentList() {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& item : list) {
+        delete item;
+    }
+}
+
 void StudentList::printItem(Student* item) {
     std::cout << item->getName() << std::endl;
 }
 
+StaffList::~StaffList() {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& item : getProfessors()) {
+        delete item;
+    }
+}
+
+std::set<Professor*> StaffList::getProfessors() {
+    std::set<Professor*> professors;
+    for (const auto& item : list) {
+        if (Professor* professor = dynamic_cast<Professor*>(item)) {
+            professors.insert(professor);
+        }
+    }
+    return professors;
+}
+
 void StaffList::printItem(Staff* item) {
     std::cout << item->getName() << std::endl;
+}
+
+CourseList::~CourseList() {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& item : list) {
+        delete item;
+    }
 }
 
 void CourseList::printItem(Course* item) {
@@ -25,6 +56,23 @@ void CourseList::printItem(Course* item) {
         for (const auto& student : item->getStudents()) {
             std::cout << student->getName() << std::endl;
         }
+    }
+}
+
+std::set<Classroom*> RoomList::getClassrooms() {
+    std::set<Classroom*> classrooms;
+    for (const auto& item : list) {
+        if (Classroom* classroom = dynamic_cast<Classroom*>(item)) {
+            classrooms.insert(classroom);
+        }
+    }
+    return classrooms;
+}
+
+RoomList::~RoomList() {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& item : getClassrooms()) {
+        delete item;
     }
 }
 

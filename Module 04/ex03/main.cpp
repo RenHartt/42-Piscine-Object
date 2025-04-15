@@ -8,14 +8,14 @@
 #include "Person.hpp"
 #include "Room.hpp"
 
-#define STUDENT_NUMBER 10
-#define PROFESSOR_NUMBER 2
-#define COURSE_NUMBER 2
+#define STUDENT_NUMBER 1
+#define PROFESSOR_NUMBER 1
+#define COURSE_NUMBER 1
 #define CLASSROOM_NUMBER 1
 
 int main() {
-    Headmaster* headmaster = new Headmaster("Headmaster");
-    new Secretary("Secretary");
+    Headmaster& headmaster = Headmaster::getInstance();
+
     for (int i = 0; i < PROFESSOR_NUMBER; ++i) {
         new Professor("Professor_" + std::to_string(i));
     }
@@ -25,10 +25,12 @@ int main() {
     for (int i = 0; i < CLASSROOM_NUMBER; ++i) {
         new Classroom();
     }
-    for (int i = 0; i < STUDENT_NUMBER; ++i) {
+    for (int i = 0; i < 10; ++i) {
         new Student("Student_" + std::to_string(i));
-        headmaster->attendYourCourse();
-        headmaster->finishYourCourse();
+        headmaster.attendYourCourse();
+        RoomList::getInstance().printList();
+
+        headmaster.finishYourCourse();
     }
 
     std::cout << "Staff List:" << std::endl;

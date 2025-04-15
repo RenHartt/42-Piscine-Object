@@ -1,64 +1,6 @@
 #include "Person.hpp"
 #include "Form.hpp"
-#include "Room.hpp"
 #include "Course.hpp"
-
-void Headmaster::receiveForm(Form* p_form) {
-    _formToValidate.insert(p_form);
-}
-
-void Headmaster::sign() {
-    for (auto form : _formToValidate) {
-        if (form->isFilled()) {
-            form->sign();
-            std::cout << "[Headmaster] Form signed by " << getName() << std::endl;
-        } else {
-            std::cout << "[Headmaster] Form is not filled." << std::endl;
-        }
-    }
-    _formToValidate.clear();
-}
-
-void Headmaster::attendYourCourse() {
-    std::cout << "[Headmaster] " << _name << " launch the classes." << std::endl;
-    for (const auto& p : StaffList::getInstance().getProfessors()) {
-        p->ensureCourse();
-        p->ensureClassroom();
-    }
-    for (const auto& s : StudentList::getInstance().getList()) {
-        s->ensureCourse();
-    }
-    for (const auto& p : StaffList::getInstance().getProfessors()) {
-        p->doClass();
-    }
-}
-
-void Headmaster::finishYourCourse() {
-    std::cout << "[Headmaster] " << _name << " finish the classes." << std::endl;
-    for (const auto& p : StaffList::getInstance().getProfessors()) {
-        p->closeCourse();
-    }
-}
-
-
-Form* Headmaster::requestForm(FormType p_formType) {
-    return StaffList::getInstance().getSecretary()->createForm(p_formType);
-}
-
-Form* Secretary::createForm(FormType p_formType) {
-    switch (p_formType) {
-        case FormType::CourseFinished:
-            return new CourseFinishedForm();
-        case FormType::NeedMoreClassRoom:
-            return new NeedMoreClassRoomForm();
-        case FormType::NeedCourseCreation:
-            return new NeedCourseCreationForm();
-        case FormType::SubscriptionToCourse:
-            return new SubscriptionToCourseForm();
-        default:
-            return nullptr;
-    }
-}
 
 void Professor::requestCourseCreation(std::string p_courseName, int p_numberOfClassToGraduate, int p_maximumNumberOfStudent) {
     Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
@@ -145,6 +87,9 @@ void Professor::closeCourse() {
     std::cout << "[Professor] " << _name << " is finishing class" << std::endl;
     for (const auto& s : _currentCourse->getStudents()) {
         s->exitClass();
+        if (s->getSubscribedCourses().at(_currentCourse) == 0) {
+            Headmaster::getInstance().addStudentToGraduate(s, _currentCourse);
+        }
     }
 
     if (Classroom* classroom =  dynamic_cast<Classroom*>(_currentRoom)) {
@@ -190,116 +135,40 @@ void Professor::endPause() {
     } else {
         std::cout << "[Professor] " << _name << " no classroom available." << std::endl;
     }
-}	
+}
+
+void Professor::startLunchBreak() {
+    std::cout << "[Professor] " << _name << " start lunch break." << std::endl;
+    if (dynamic_cast<Classroom*>(_currentRoom)) {
+        std::cout << "[Professor] " << _name << " is exiting class " << _currentRoom->getID() << std::endl;
+        _currentRoom->exit(this);
+        exitRoom();
+    }
+}
+
+void Professor::endLunchBreak() {
+    std::cout << "[Professor] " << _name << " end lunch break." << std::endl;
+    if (dynamic_cast<Classroom*>(_previousRoom)) {
+        std::cout << "[Professor] " << _name << " enter classroom." << std::endl;
+        _previousRoom->enter(this);
+        enterRoom(_previousRoom);
+    } else {
+        std::cout << "[Professor] " << _name << " no classroom available." << std::endl;
+    }
+}
 
 void Professor::update(Event p_event) {
     if (p_event == Event::RingBell) {
-        if (Classroom* classroom = dynamic_cast<Classroom*>(_currentRoom)) {
+        if (dynamic_cast<Classroom*>(_currentRoom)) {
             startPause();
         } else {
             endPause();
         }
-    }
-}
-
-void Student::requestSubscriptionToCourse(Course* p_course) {
-    Headmaster* headmaster = StaffList::getInstance().getHeadmaster();
-    Form* form = headmaster->requestForm(FormType::SubscriptionToCourse);
-    dynamic_cast<SubscriptionToCourseForm*>(form)->fill(this, p_course);
-    headmaster->receiveForm(form);
-    headmaster->sign();
-    form->execute();
-    Secretary::getInstance().archiveForm(form);
-}
-
-void Student::subscribe(Course* p_course) {
-    if (_subscribedCourse.count(p_course) == 0) {
-        std::cout << "[Student] " << _name << " subscribed to course " << p_course->getName() << std::endl;
-        _subscribedCourse[p_course] = p_course->getNumberOfClassToGraduate();
-    } else {
-        std::cout << "[Student] " << _name << " Already subscribed to course " << p_course->getName() << std::endl;
-    }
-}
-
-void Student::unsubscribe(Course* p_course) {
-    if (_subscribedCourse.erase(p_course)) {
-        std::cout << "[Student] " << _name << " unsubscribed from course " << p_course->getName() << std::endl;
-    } else {
-        std::cout << "[Student] " << _name << " Not subscribed to course " << p_course->getName() << std::endl;
-    }
-}
-
-void Student::ensureCourse() {
-    std::cout << "[Student] " << _name << " is ensuring course subscription." << std::endl;
-    if (_subscribedCourse.empty()) {
-        for (const auto& course : CourseList::getInstance().getList()) {
-            if (course->getStudents().size() < course->getMaximumNumberOfStudent()) {
-                requestSubscriptionToCourse(course);
-                return;
-            }
-        }
-        std::cout << "[Student] " << _name << " No available courses to subscribe." << std::endl;
-    } 
-}
-
-void Student::attendClass(Classroom* p_classroom) { 
-    std::cout << "[Student] " << _name << " is attending class " << p_classroom->getCurrentCourse()->getName() << std::endl;
-    this->enterRoom(p_classroom);
-    p_classroom->enter(this);
-    _subscribedCourse[p_classroom->getCurrentCourse()]--;
-}
-
-void Student::exitClass() {
-    if (_currentRoom != nullptr) {
-        std::cout << "[Student] " << _name << " is exiting class " << _currentRoom->getID() << std::endl;
-        _currentRoom->exit(this);
-        this->exitRoom();
-    }
-}
-
-void Student::graduate(Course* p_course) {
-    std::cout << "[Student] " << _name << " graduated from course " << p_course->getName() << std::endl;
-}
-
-void Student::startPause() {
-    std::cout << "[Student] " << _name << " start pause." << std::endl;
-    if (dynamic_cast<Classroom*>(_currentRoom)) {
-        std::cout << "[Student] " << _name << " is exiting class " << _currentRoom->getID() << std::endl;
-        _currentRoom->exit(this);
-        exitRoom();
-    }
-    if (Courtyard* courtyard = RoomList::getInstance().getCourtyard()) {
-        std::cout << "[Student] " << _name << " enter courtyard." << std::endl;
-        courtyard->enter(this);
-        enterRoom(courtyard);
-    } else {
-        std::cout << "[Student] " << _name << " no courtyard available." << std::endl;
-    }
-}
-
-void Student::endPause() {
-    std::cout << "[Student] " << _name << " end pause." << std::endl;
-    Room* previous = _previousRoom;
-    if (dynamic_cast<Courtyard*>(_currentRoom)) {
-        std::cout << "[Student] " << _name << " is exiting courtyard." << std::endl;
-        _currentRoom->exit(this);
-        exitRoom();
-    }
-    if (dynamic_cast<Classroom*>(previous)) {
-        std::cout << "[Student] " << _name << " enter classroom." << std::endl;
-        previous->enter(this);
-        enterRoom(previous);
-    } else {
-        std::cout << "[Student] " << _name << " no classroom available." << std::endl;
-    }
-}
-
-void Student::update(Event p_event) {
-    if (p_event == Event::RingBell) {
-        if (Classroom* classroom = dynamic_cast<Classroom*>(_currentRoom)) {
-            startPause();
+    } else if (p_event == Event::LunchBreak) {
+        if (dynamic_cast<Classroom*>(_currentRoom)) {
+            startLunchBreak();
         } else {
-            endPause();
+            endLunchBreak();
         }
     }
 }

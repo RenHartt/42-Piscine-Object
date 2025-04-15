@@ -7,10 +7,12 @@
 
 #include "Singleton.hpp"
 
+class Professor;
 class Student;
 class Staff;
 class Course;
 class Room;
+class Classroom;
 
 template <typename T>
 class List {
@@ -21,12 +23,7 @@ protected:
     virtual void printItem(T* item) = 0;
 
 public:
-    virtual ~List() {
-        for (const auto& item : list) {
-            delete item;
-        }
-        list.clear();
-    }
+    virtual ~List() {}
     
     void addToList(T* toAdd) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -38,10 +35,13 @@ public:
         list.erase(toRemove);
     }
 
-    T* getFromList(T* toGet) {
+    T* getFromList(const std::string& toGet) {
         std::lock_guard<std::mutex> lock(mtx);
-        auto it = list.find(toGet);
-        if (it != list.end()) return *it;
+        for (const auto& item : list) {
+            if (item->getName() == toGet) {
+                return item;
+            }
+        }
         return nullptr;
     }
 
@@ -54,21 +54,33 @@ public:
 };
 
 class StudentList : public List<Student>, public Singleton<StudentList> {
-protected:
+public:
+    ~StudentList();
+
     void printItem(Student* item) override;
 };
 
 class StaffList : public List<Staff>, public Singleton<StaffList> {
-protected:
+private:
+    std::set<Professor*> getProfessors();
+public:
+    ~StaffList();
+
     void printItem(Staff* item) override;
 };
 
 class CourseList : public List<Course>, public Singleton<CourseList> {
-protected:
+public:
+    ~CourseList();
+
     void printItem(Course* item) override;
 };
 
 class RoomList : public List<Room>, public Singleton<RoomList> {
-protected:
+private:
+    std::set<Classroom*> getClassrooms();
+public:
+    ~RoomList();
+
     void printItem(Room* item) override;
 };
