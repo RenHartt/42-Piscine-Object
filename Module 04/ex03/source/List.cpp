@@ -91,15 +91,19 @@ void RoomList::printItem(Room* item) {
         std::cout << " - Secretarial Office [" << roomId << "]" << std::endl;
     } else if (HeadmasterOffice* office = dynamic_cast<HeadmasterOffice*>(item)) {
         std::cout << " - Headmaster Office [" << roomId << "]" << std::endl;
+    } else if (StaffRestRoom* restRoom = dynamic_cast<StaffRestRoom*>(item)) {
+        std::cout << " - Staff Rest Room [" << roomId << "]" << std::endl;
+    } else if (Courtyard* courtyard = dynamic_cast<Courtyard*>(item)) {
+        std::cout << " - Courtyard [" << roomId << "]" << std::endl;
     } else {
         std::cout << " - Room [" << roomId << "]" << std::endl;
     }
     if (item->getOccupants().empty()) {
         std::cout << "Occupants: None" << std::endl;
     } else {
-        std::cout << "Occupants: " << std::endl;
+        std::cout << "Occupants: ";
         for (const auto& occupant : item->getOccupants()) {
-            std::cout << " - " << occupant->getName() << std::endl;
+            std::cout << occupant->getName() << " " << std::endl;
         }
     }
 }
