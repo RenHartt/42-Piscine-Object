@@ -1,21 +1,39 @@
 #pragma once
 
+#include <unordered_set>
 #include <string>
-#include <vector>
+#include <stdexcept>
 
 #include "Utils.hpp"
+#include "LinkablePart.hpp"
+#include "RailwayCollection.hpp"
 
-class Node {
+class Node : public LinkablePart {
 private:
     std::string name;
-    Vec2f coordinates;
+    std::unordered_set<Rail*> connectedSegments;
 public:
-    Node(const std::string& name, const Vec2f& coordinates) : name(name), coordinates(coordinates) {}
+    Node(const std::string& name) : name(name) {
+        if (name.empty()) {
+            throw std::invalid_argument("Node name cannot be empty");
+        }
+        NodeCollection::getInstance().add(this);
+    }
 
     const std::string& getName() const { return name; }
-    const Vec2f& getCoordinates() const { return coordinates; }
-    void setName(const std::string& name) { this->name = name; }
-    void setCoordinates(const Vec2f& coordinates) { this->coordinates = coordinates; }
-    void setCoordinates(float x, float y) { coordinates = Vec2f(x, y); }
-    void setCoordinates(const float arr[2]) { coordinates = Vec2f(arr[0], arr[1]); }
+    const std::unordered_set<Rail*>& getConnectedNodes() const { return connectedSegments; }
+    
+    void addConnection(Rail* segment) {
+        if (segment == nullptr) {
+            throw std::invalid_argument("Node cannot be null");
+        }
+        connectedSegments.insert(segment);
+    }
+    
+    void removeConnection(Rail* segment) {
+        if (segment == nullptr) {
+            throw std::invalid_argument("Node cannot be null");
+        }
+        connectedSegments.erase(segment);
+    }
 };
