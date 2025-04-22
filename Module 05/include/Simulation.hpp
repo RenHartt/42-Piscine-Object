@@ -1,17 +1,15 @@
 #pragma once
 
 #include "Singleton.hpp"
-#include "RailwayCollection.hpp"
-#include "Node.hpp"
-#include "Rail.hpp"
-#include "Train.hpp"
+#include "Observer.hpp"
 #include "Factory.hpp"
+#include "RailwayCollection.hpp"
 
 #include <fstream>
 #include <stdexcept>
 #include <sstream>
 
-class Simulation : public Singleton<Simulation> {
+class Simulation : public Singleton<Simulation>, public Subject {
 private:
 
 public:
@@ -31,7 +29,7 @@ public:
             if (type == "Node") {
                 std::string name;
                 iss >> name;
-                Factory::createNode(name);
+                Factory::getInstance().createNode(name);
             } else if (type == "Rail") {
                 std::string departureName, arrivalName;
                 float length, speedLimit;
@@ -41,7 +39,7 @@ public:
                 if (!departure || !arrival) {
                     throw std::runtime_error("Invalid node names: " + departureName + ", " + arrivalName);
                 }
-                Factory::createRail(departure, arrival, length, speedLimit);
+                Factory::getInstance().createRail(departure, arrival, length * 1000, speedLimit * (5./18.));
             } else {
                 throw std::runtime_error("Unknown type: " + type);
             }
@@ -68,7 +66,17 @@ public:
             }
             Time departureTime(hourOfDeparture);
             Time stopDuration(durationOfStop);
-            Factory::createTrain(name, weight, friction, acceleration, brake, departure, arrival, departureTime, stopDuration);
+            Factory::getInstance().createTrain(name, weight, friction, acceleration, brake, departure, arrival, departureTime, stopDuration);
         }
+    }
+
+    const std::list<LinkablePart*> calculateRoute(const Train&) const {
+        std::list<LinkablePart*> route;
+        route.push_back(NodeCollection::getInstance().getByName("CityA"));
+        route.push_back(RailCollection::getInstance().getById(1));
+        route.push_back(NodeCollection::getInstance().getByName("CityB"));
+        route.push_back(RailCollection::getInstance().getById(2));
+        route.push_back(NodeCollection::getInstance().getByName("CityC"));
+        return route;
     }
 };

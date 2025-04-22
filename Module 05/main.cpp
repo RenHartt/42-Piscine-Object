@@ -23,5 +23,14 @@ int main(int argc, char* argv[]) {
     std::cout << "---------- Node ----------" << std::endl;
     NodeCollection::getInstance().print();
 
+    for (const auto& train : TrainCollection::getInstance().getElements()) {
+        Simulation::getInstance().attach(train);
+        train->requestRoute();
+    }
+
+    while (true) {
+        Simulation::getInstance().notify(Time(0, 0, 10));
+    }
+
     return EXIT_SUCCESS;
 }

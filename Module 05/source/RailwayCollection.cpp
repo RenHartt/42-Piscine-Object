@@ -13,13 +13,13 @@ TrainCollection::~TrainCollection() {
 
 void TrainCollection::printItem(Train* item) const {
     std::cout << "Id : " << item->getId() << ", Name: " << item->getName() << std::endl;
-    std::cout << "Weight: " << item->getWeight() << ", Friction Coefficient: " << item->getFrictionCoefficient()
+    std::cout << "Weight: " << item->getWeightTonnes() << ", Friction Coefficient: " << item->getFrictionCoefficient()
                 << ", Acceleration Force: " << item->getAccelerationForce() << ", Braking Force: " << item->getBrakingForce()
+                << ", Acceleration Coefficient: " << item->getAccelerationCoefficient() << ", Braking Coefficient: " << item->getBrakingCoefficient()
                 << std::endl;
     std::cout << "Departure: " << item->getDeparture()->getName() << ", Arrival: " << item->getArrival()->getName() << std::endl;
     std::cout << "Departure Time: " << item->getDepartureTime().hours.count() << ":" << item->getDepartureTime().minutes.count()
                 << ", Stop Duration: " << item->getStopDuration().hours.count() << ":" << item->getStopDuration().minutes.count() << std::endl;
-    std::cout << "Motion Phase: " << static_cast<int>(item->getPhase()) << ", Speed: " << item->getSpeed() << std::endl;
 }
 
 RailCollection::~RailCollection() {

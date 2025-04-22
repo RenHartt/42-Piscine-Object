@@ -8,6 +8,8 @@
 #include "LinkablePart.hpp"
 #include "RailwayCollection.hpp"
 
+class Rail;
+
 class Node : public LinkablePart {
 private:
     std::string name;

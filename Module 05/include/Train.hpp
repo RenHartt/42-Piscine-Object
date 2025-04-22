@@ -1,15 +1,16 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <list>
 #include <stdexcept>
+#include <algorithm>
+#include <iostream>
 
-#include "Node.hpp"
 #include "Utils.hpp"
-#include "Event.hpp"
-#include "Motion.hpp"
-#include "Rail.hpp"
+#include "Observer.hpp"
 #include "RailwayCollection.hpp"
+#include "LinkablePart.hpp"
+#include "Node.hpp"
 
 class Identity {
 private:
@@ -29,29 +30,48 @@ public:
 
 class Specification {
 private:
-    float weight;
-    float frictionCoefficient;
-    float accelerationForce;
-    float brakingForce;
+    float weightTonnes; // Poids en tonnes
+    float frictionCoefficient; // Coefficient de friction
+    float accelerationForce; // Force d'accélération en kN
+    float brakingForce; // Force de freinage en kN
+    float accelerationCoefficient; // Coefficient d'accélération (m/s²)
+    float brakingCoefficient; // Coefficient de décélération (m/s²)
+    float gravity = 9.81f; // Accélération due à la gravité (m/s²)
+
 public:
-    Specification(float weight, float frictionCoefficient, float accelerationForce, float brakingForce)
-        : weight(weight), frictionCoefficient(frictionCoefficient), accelerationForce(accelerationForce), brakingForce(brakingForce) {
-        if (weight <= 0 || frictionCoefficient <= 0 || accelerationForce <= 0 || brakingForce <= 0) {
+    Specification(float weightTonnes, float frictionCoefficient, float accelerationForce, float brakingForce)
+        : weightTonnes(weightTonnes), frictionCoefficient(frictionCoefficient), accelerationForce(accelerationForce), brakingForce(brakingForce) {
+        if (weightTonnes <= 0 || frictionCoefficient <= 0 || accelerationForce <= 0 || brakingForce <= 0) {
             throw std::invalid_argument("Weight, friction coefficient, acceleration force, and braking force must be positive");
+        }
+
+        float weightNewtons = weightTonnes * 1000 * gravity;
+        float mass = weightNewtons / gravity;
+        float accelerationForceInNewtons = accelerationForce * 1000;
+        float brakingForceInNewtons = brakingForce * 1000;
+        float frictionForce = frictionCoefficient * mass * gravity;
+
+        accelerationCoefficient = (accelerationForceInNewtons - frictionForce) / mass;
+        brakingCoefficient = (brakingForceInNewtons + frictionForce) / mass;
+
+        if (accelerationCoefficient < 0 || brakingCoefficient < 0) {
+            throw std::invalid_argument("Acceleration and braking coefficients must be non-negative");
         }
     }
 
-    float getWeight() const { return weight; }
+    float getWeightTonnes() const { return weightTonnes; }
     float getFrictionCoefficient() const { return frictionCoefficient; }
     float getAccelerationForce() const { return accelerationForce; }
     float getBrakingForce() const { return brakingForce; }
+    float getAccelerationCoefficient() const { return accelerationCoefficient; }
+    float getBrakingCoefficient() const { return brakingCoefficient; }
 };
 
 class Route {
 private:
     const Node* departure;
     const Node* arrival;
-    std::vector<LinkablePart*> route;
+    std::list<LinkablePart*> route;
 public:
     Route(const Node* departure, const Node* arrival) : departure(departure), arrival(arrival) {
         if (departure == nullptr || arrival == nullptr) {
@@ -61,16 +81,15 @@ public:
 
     const Node* getDeparture() const { return departure; }
     const Node* getArrival() const { return arrival; }
-    const std::vector<LinkablePart*>& getRoute() const { return route; }
-    void setRoute(const std::vector<LinkablePart*>& newRoute) {
-        route = newRoute;
-    }
+    const std::list<LinkablePart*>& getRoute() const { return route; }
+    void setRoute(const std::list<LinkablePart*>& newRoute) { route = newRoute; }
 };
 
 class Schedule {
 private:
     Time departureTime;
     Time stopDuration;
+    Time countdown = stopDuration;
 public:
     Schedule(const Time& departureTime, const Time& stopDuration)
         : departureTime(departureTime), stopDuration(stopDuration) {
@@ -84,56 +103,42 @@ public:
 
     const Time& getDepartureTime() const { return departureTime; }
     const Time& getStopDuration() const { return stopDuration; }
+    const Time& getCountdown() const { return countdown; }
+    void setCountdown(const Time& newCountdown) { countdown = newCountdown; }
 };
 
-class TrainState : public MotionListener, public RailEventListener {
+enum class TrainStateType {
+    Accelerate,
+    ConstantSpeed,
+    Decelerate,
+    Stop
+};
+
+class TrainState {
 private:
-    MotionPhase phase = MotionPhase::Stopped;
-    float speed = 0.0f;
-    const Rail* currentSegment = nullptr;
+    TrainStateType stateType = TrainStateType::ConstantSpeed;
+    LinkablePart* currentPart;
+    float speed = 0.0f; // Initial speed in m/s
     float distanceOnSegment = 0.0f;
 public:
-    void onMotionPhase(MotionPhase p) override {
-        phase = p;
-        switch (p) {
-            case MotionPhase::Stopped:
-                speed = 0.0f;
-                break;
-            case MotionPhase::Moving:
-                // handle moving state
-                break;
-            case MotionPhase::Braking:
-                // handle braking state
-                break;
-            case MotionPhase::Accelerating:
-                // handle accelerating state
-                break;
+    TrainState(LinkablePart* part) : currentPart(part) {
+        if (part == nullptr) {
+            throw std::invalid_argument("Current part cannot be null");
         }
     }
 
-    void onRailEvent(RailEventType e) override {
-        switch (e) {
-            case RailEventType::StationClose:
-                // handle station close event
-                break;
-            case RailEventType::RailClose:
-                // handle rail segment close event
-                break;
-        }
-    }
-
-    MotionPhase getPhase() const { return phase; }
+    TrainStateType getStateType() const { return stateType; }
+    const LinkablePart* getCurrentPart() const { return currentPart; }
     float getSpeed() const { return speed; }
-    const Rail* getSegment() const { return currentSegment; }
     float getDistance() const { return distanceOnSegment; }
 
-    void advance(float dt) {
-        distanceOnSegment += speed * dt;
-        // if exceeding segment length: notify and change segment externally
-    }
+    void setStateType(TrainStateType newState) { stateType = newState; }
+    void setSegment(LinkablePart* part) { currentPart = part; }
+    void setSpeed(float newSpeed) { speed = newSpeed; }
+    void setDistance(float distance) { distanceOnSegment = distance; }
 };
 
-class Train {
+class Train : public Observer {
 private:
     Identity identity;
     Specification specification;
@@ -144,22 +149,45 @@ public:
     Train(const std::string& name, float weight, float frictionCoefficient, float accelerationForce, float brakingForce,
           Node* departure, Node* arrival, const Time& departureTime, const Time& stopDuration)
         : identity(name), specification(weight, frictionCoefficient, accelerationForce, brakingForce),
-          route(departure, arrival), schedule(departureTime, stopDuration), state() {
+          route(departure, arrival), schedule(departureTime, stopDuration), state(departure) {
             TrainCollection::getInstance().add(this);
           }
 
     long long getId() const { return identity.getId(); }
     const std::string& getName() const { return identity.getName(); }
-    float getWeight() const { return specification.getWeight(); }
+    float getWeightTonnes() const { return specification.getWeightTonnes(); }
     float getFrictionCoefficient() const { return specification.getFrictionCoefficient(); }
     float getAccelerationForce() const { return specification.getAccelerationForce(); }
     float getBrakingForce() const { return specification.getBrakingForce(); }
+    float getAccelerationCoefficient() const { return specification.getAccelerationCoefficient(); }
+    float getBrakingCoefficient() const { return specification.getBrakingCoefficient(); }
     const Node* getDeparture() const { return route.getDeparture(); }
     const Node* getArrival() const { return route.getArrival(); }
+    const std::list<LinkablePart*>& getRoute() const { return route.getRoute(); }
     const Time& getDepartureTime() const { return schedule.getDepartureTime(); }
     const Time& getStopDuration() const { return schedule.getStopDuration(); }
-    MotionPhase getPhase() const { return state.getPhase(); }
-    const Rail* getCurrentSegment() const { return state.getSegment(); }
+    const Time& getCountdown() const { return schedule.getCountdown(); }
+    const LinkablePart* getCurrentPart() const { return state.getCurrentPart(); }
     float getDistanceOnSegment() const { return state.getDistance(); }
     float getSpeed() const { return state.getSpeed(); }
+    TrainStateType getStateType() const { return state.getStateType(); }
+
+    void setCountdown(const Time& newCountdown) { schedule.setCountdown(newCountdown); }
+    void setCurrentPart(LinkablePart* part) { state.setSegment(part); }
+    void setSpeed(float newSpeed) { state.setSpeed(newSpeed); }
+    void setDistanceOnSegment(float distance) { state.setDistance(distance); }
+    void setRoute(const std::list<LinkablePart*>& newRoute) { route.setRoute(newRoute); }
+
+    float calculateBrakingDistance() const {
+        float velocity = state.getSpeed();
+        float brakingDeceleration = getBrakingCoefficient();
+        return (velocity * velocity) / (2 * brakingDeceleration);
+    }
+
+    void requestRoute();
+    LinkablePart* getNextPart();
+    void travelOnRail(const Time& time);
+    void travelOnNode(const Time& time);
+    void travel(const Time& time);
+    void update(const Time& time) override;
 };
