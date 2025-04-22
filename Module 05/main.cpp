@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     }
 
     while (true) {
-        Simulation::getInstance().notify(Time(0, 0, 10));
+        Simulation::getInstance().notify(Time(0, 0, 1));
     }
 
     return EXIT_SUCCESS;

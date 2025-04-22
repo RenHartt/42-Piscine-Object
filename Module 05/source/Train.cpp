@@ -21,32 +21,41 @@ LinkablePart* Train::getNextPart() {
 
 void Train::travelOnRail(const Time& time) {
     const Rail* rail = dynamic_cast<const Rail*>(state.getCurrentPart());
-   
-    float currentSpeed = getSpeed();
-    float breakingDistance = calculateBrakingDistance();
-    float remainingDistance = rail->getLength() - getDistanceOnSegment();
+    for (int sec = 0; sec < (int)time.toFloat(); ++sec) {
+        float currentSpeed = getSpeed();
+        float timeStep = time.toFloat();
+        float nextSpeed = currentSpeed + getAccelerationCoefficient() * timeStep;
 
-    if (remainingDistance > breakingDistance) {
-        if (currentSpeed < rail->getSpeedLimit()) {
+        float nextBrakingDistance = (nextSpeed * nextSpeed) / (2 * getBrakingCoefficient());
+        float remainingDistance = rail->getLength() - getDistanceOnSegment() - (nextSpeed * timeStep);
+
+        if (remainingDistance <= nextBrakingDistance) {
+            state.setStateType(TrainStateType::Decelerate);
+            float newSpeed = currentSpeed - getBrakingCoefficient() * timeStep;
+            if (newSpeed < 3.0f) newSpeed = 3.0f;
+            setSpeed(newSpeed);
+        } else if (currentSpeed < rail->getSpeedLimit()) {
             state.setStateType(TrainStateType::Accelerate);
-            float newSpeed = currentSpeed + getAccelerationCoefficient() * time.toFloat();
+            float newSpeed = currentSpeed + getAccelerationCoefficient() * timeStep;
             if (newSpeed > rail->getSpeedLimit()) newSpeed = rail->getSpeedLimit();
             setSpeed(newSpeed);
         } else {
             state.setStateType(TrainStateType::ConstantSpeed);
             setSpeed(rail->getSpeedLimit());
         }
-    } else  {
-        state.setStateType(TrainStateType::Decelerate);
-        setSpeed(currentSpeed - getBrakingCoefficient() * time.toFloat());
+
+        float distancetravelled = getDistanceOnSegment() + getSpeed() * timeStep;
+        if (distancetravelled > rail->getLength()) {
+            distancetravelled = rail->getLength();
+        }
+        setDistanceOnSegment(distancetravelled);
     }
-    float distancetravelled = getDistanceOnSegment() + currentSpeed * time.toFloat();
-    if (distancetravelled > rail->getLength()) { distancetravelled = rail->getLength(); }
-    setDistanceOnSegment(distancetravelled);
-    
-    std::cout << "Train " << getName() << " is on rail segment " << rail->getId() << " with distance: " << getDistanceOnSegment() / 1000 << " and speed: " << getSpeed() / (5./18.) << std::endl;
-    
-    if (getDistanceOnSegment() >= rail->getLength()) {
+
+    std::cout << "Train " << getName() << " is on rail segment " << rail->getId()
+            << " with distance: " << getDistanceOnSegment() / 1000
+            << " and speed: " << getSpeed() / (5.0f / 18.0f) << std::endl;
+
+    if (getDistanceOnSegment() >= rail->getLength() - 0.001f) {
         setCountdown(getStopDuration());
         setDistanceOnSegment(0.0f);
         setSpeed(0.0f);

@@ -45,8 +45,8 @@ public:
             throw std::invalid_argument("Weight, friction coefficient, acceleration force, and braking force must be positive");
         }
 
-        float weightNewtons = weightTonnes * 1000 * gravity;
-        float mass = weightNewtons / gravity;
+        float weightNewtons = weightTonnes * 1000;
+        float mass = weightNewtons;
         float accelerationForceInNewtons = accelerationForce * 1000;
         float brakingForceInNewtons = brakingForce * 1000;
         float frictionForce = frictionCoefficient * mass * gravity;
