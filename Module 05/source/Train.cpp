@@ -7,7 +7,7 @@
 #include "Event.hpp"
 
 void Train::requestRoute() {
-    setRoute(Simulation::getInstance().calculateRoute(*this));
+    setRoute(Simulation::getInstance().calculateRoute(this));
 }
 
 LinkablePart* Train::getNextPart() {

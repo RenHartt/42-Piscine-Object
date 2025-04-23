@@ -4,6 +4,7 @@
 #include "Event.hpp"
 #include "LinkablePart.hpp"
 #include "RailwayCollection.hpp"
+#include "Utils.hpp"
 
 #include <unordered_set>
 #include <stdexcept>
@@ -12,14 +13,12 @@ class Rail : public LinkablePart, public RailEventSource {
 private:
     inline static long long nextId = 1;
     long long id;
-    const Node* departure;
-    const Node* arrival;
     float length;
     float speedLimit;
     std::unordered_set<long long> trainOnSegment;
 public:
     Rail(Node* departure, Node* arrival, float length, float speedLimit)
-        : id(nextId++), departure(departure), arrival(arrival), length(length), speedLimit(speedLimit) {
+        : LinkablePart({departure, arrival}), id(nextId++), length(length), speedLimit(speedLimit) {
         if (departure == nullptr || arrival == nullptr) {
             throw std::invalid_argument("Departure or arrival node cannot be null");
         }
@@ -38,8 +37,9 @@ public:
     }
 
     long long getId() const { return id; }
-    const Node* getDeparture() const { return departure; }
-    const Node* getArrival() const { return arrival; }
+    Node* getDeparture() const { return dynamic_cast<Node*>(*connectedParts.begin()); }
+    Node* getArrival() const { return dynamic_cast<Node*>(*(++connectedParts.begin())); }
+    std::unordered_set<Node*> getConnectedNodes() const { return castToSet<Node>(connectedParts); }
     float getLength() const { return length; }
     float getSpeedLimit() const { return speedLimit; }
 

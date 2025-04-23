@@ -69,18 +69,18 @@ public:
 
 class Route {
 private:
-    const Node* departure;
-    const Node* arrival;
+    Node* departure;
+    Node* arrival;
     std::list<LinkablePart*> route;
 public:
-    Route(const Node* departure, const Node* arrival) : departure(departure), arrival(arrival) {
+    Route(Node* departure, Node* arrival) : departure(departure), arrival(arrival) {
         if (departure == nullptr || arrival == nullptr) {
             throw std::invalid_argument("Departure or arrival node cannot be null");
         }
     }
 
-    const Node* getDeparture() const { return departure; }
-    const Node* getArrival() const { return arrival; }
+    Node* getDeparture() const { return departure; }
+    Node* getArrival() const { return arrival; }
     const std::list<LinkablePart*>& getRoute() const { return route; }
     void setRoute(const std::list<LinkablePart*>& newRoute) { route = newRoute; }
 };
@@ -128,7 +128,7 @@ public:
     }
 
     TrainStateType getStateType() const { return stateType; }
-    const LinkablePart* getCurrentPart() const { return currentPart; }
+    LinkablePart* getCurrentPart() const { return currentPart; }
     float getSpeed() const { return speed; }
     float getDistance() const { return distanceOnSegment; }
 
@@ -161,13 +161,13 @@ public:
     float getBrakingForce() const { return specification.getBrakingForce(); }
     float getAccelerationCoefficient() const { return specification.getAccelerationCoefficient(); }
     float getBrakingCoefficient() const { return specification.getBrakingCoefficient(); }
-    const Node* getDeparture() const { return route.getDeparture(); }
-    const Node* getArrival() const { return route.getArrival(); }
+    Node* getDeparture() const { return route.getDeparture(); }
+    Node* getArrival() const { return route.getArrival(); }
     const std::list<LinkablePart*>& getRoute() const { return route.getRoute(); }
     const Time& getDepartureTime() const { return schedule.getDepartureTime(); }
     const Time& getStopDuration() const { return schedule.getStopDuration(); }
     const Time& getCountdown() const { return schedule.getCountdown(); }
-    const LinkablePart* getCurrentPart() const { return state.getCurrentPart(); }
+    LinkablePart* getCurrentPart() const { return state.getCurrentPart(); }
     float getDistanceOnSegment() const { return state.getDistance(); }
     float getSpeed() const { return state.getSpeed(); }
     TrainStateType getStateType() const { return state.getStateType(); }

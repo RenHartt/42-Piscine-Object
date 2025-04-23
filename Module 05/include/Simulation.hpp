@@ -4,6 +4,8 @@
 #include "Observer.hpp"
 #include "Factory.hpp"
 #include "RailwayCollection.hpp"
+#include "Pathfinding.hpp"
+#include "Train.hpp"
 
 #include <fstream>
 #include <stdexcept>
@@ -70,13 +72,7 @@ public:
         }
     }
 
-    const std::list<LinkablePart*> calculateRoute(const Train&) const {
-        std::list<LinkablePart*> route;
-        route.push_back(NodeCollection::getInstance().getByName("CityA"));
-        route.push_back(RailCollection::getInstance().getById(1));
-        route.push_back(NodeCollection::getInstance().getByName("CityB"));
-        route.push_back(RailCollection::getInstance().getById(2));
-        route.push_back(NodeCollection::getInstance().getByName("CityC"));
-        return route;
+    const std::list<LinkablePart*> calculateRoute(Train* train) const {
+        return Pathfinding().dijkstra(train);
     }
 };

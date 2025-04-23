@@ -1,6 +1,6 @@
 NAME = Simulation
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++17
+CFLAGS = -Wall -Wextra -Werror -std=c++20
 
 SRC_DIR = source
 INC_DIR = include

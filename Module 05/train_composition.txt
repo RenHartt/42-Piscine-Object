@@ -1,1 +1,1 @@
-TrainAC 60 0.05 412.0 40.0 CityA CityC 14h20 00h10
+TrainAF 80 0.05 400.0 50.0 CityA CityF 15h30 00h05

@@ -13,7 +13,6 @@ class Rail;
 class Node : public LinkablePart {
 private:
     std::string name;
-    std::unordered_set<Rail*> connectedSegments;
 public:
     Node(const std::string& name) : name(name) {
         if (name.empty()) {
@@ -23,19 +22,5 @@ public:
     }
 
     const std::string& getName() const { return name; }
-    const std::unordered_set<Rail*>& getConnectedNodes() const { return connectedSegments; }
-    
-    void addConnection(Rail* segment) {
-        if (segment == nullptr) {
-            throw std::invalid_argument("Node cannot be null");
-        }
-        connectedSegments.insert(segment);
-    }
-    
-    void removeConnection(Rail* segment) {
-        if (segment == nullptr) {
-            throw std::invalid_argument("Node cannot be null");
-        }
-        connectedSegments.erase(segment);
-    }
+    std::unordered_set<Rail*> getConnectedRails() const { return castToSet<Rail>(connectedParts); }
 };

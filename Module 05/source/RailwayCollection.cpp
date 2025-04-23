@@ -31,7 +31,7 @@ RailCollection::~RailCollection() {
 void RailCollection::printItem(Rail* item) const {
     std::cout << "Id: " << item->getId() << ", Departure: " << item->getDeparture()->getName()
                 << ", Arrival: " << item->getArrival()->getName() << std::endl;
-    std::cout << "Length: " << item->getLength() << ", Speed Limit: " << item->getSpeedLimit() << std::endl;
+    std::cout << "Length: " << item->getLength() / 1000 << ", Speed Limit: " << item->getSpeedLimit() / (5.0f / 18.0f) << std::endl;
 }
 
 NodeCollection::~NodeCollection() {
@@ -43,7 +43,7 @@ NodeCollection::~NodeCollection() {
 void NodeCollection::printItem(Node* item) const {
     std::cout << "Node Name: " << item->getName() << std::endl;
     std::cout << "Connected Segments: ";
-    for (const auto& segment : item->getConnectedNodes()) {
+    for (const auto& segment : item->getConnectedRails()) {
         std::cout << segment->getId() << " ";
     }
     std::cout << std::endl;
