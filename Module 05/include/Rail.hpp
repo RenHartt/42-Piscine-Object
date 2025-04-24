@@ -15,7 +15,8 @@ private:
     long long id;
     float length;
     float speedLimit;
-    std::unordered_set<long long> trainOnSegment;
+    std::unordered_set<Train*> trainOnSegment;
+    bool isClosed = false;
 public:
     Rail(Node* departure, Node* arrival, float length, float speedLimit)
         : LinkablePart({departure, arrival}), id(nextId++), length(length), speedLimit(speedLimit) {
@@ -37,16 +38,25 @@ public:
     }
 
     long long getId() const { return id; }
-    Node* getDeparture() const { return dynamic_cast<Node*>(*connectedParts.begin()); }
-    Node* getArrival() const { return dynamic_cast<Node*>(*(++connectedParts.begin())); }
+    Node* getDeparture() const { return dynamic_cast<Node*>(*(++connectedParts.begin())); }
+    Node* getArrival() const { return dynamic_cast<Node*>(*connectedParts.begin()); }
     std::unordered_set<Node*> getConnectedNodes() const { return castToSet<Node>(connectedParts); }
     float getLength() const { return length; }
     float getSpeedLimit() const { return speedLimit; }
+    bool isClosedRail() const { return isClosed; }
 
-    void addTrain(long long trainId) { trainOnSegment.insert(trainId); }
-    void removeTrain(long long trainId) { trainOnSegment.erase(trainId); }
-    bool isTrainOnSegment(long long trainId) const { return trainOnSegment.find(trainId) != trainOnSegment.end(); }
-    const std::unordered_set<long long>& getTrainsOnSegment() const { return trainOnSegment; }
+    void addTrain(Train* train) { trainOnSegment.insert(train); }
+    void removeTrain(Train* train) { trainOnSegment.erase(train); }
+    bool isTrainOnSegment(Train* train) const { return trainOnSegment.find(train) != trainOnSegment.end(); }
+    const std::unordered_set<Train*>& getTrainsOnSegment() const { return trainOnSegment; }
     void clearTrainsOnSegment() { trainOnSegment.clear(); }
     bool isSegmentEmpty() const { return trainOnSegment.empty(); }
+    void close() {
+        isClosed = true;
+        notifyObservers(RailEventType::RailClose);
+    }
+    void open() {
+        isClosed = false;
+        notifyObservers(RailEventType::RailClose);
+    }
 };

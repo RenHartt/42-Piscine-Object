@@ -4,15 +4,30 @@ Node CityC
 Node CityD
 Node CityE
 Node CityF
-Node CityG
-Node DeadEnd
-Rail CityA CityB 1000.0 250.0
-Rail CityB CityC 400.0 50.0
-Rail CityC CityD 400.0 250.
-Rail CityB CityE 1500.0 250.0
-Rail CityE CityD 500.0 250.
-Rail CityD CityF 200.0 100.
-Rail CityF CityC 300.0 250.0
-Rail CityC CityG 1200.0 300.
-Rail CityG CityA 1000.0 250.0
-Rail CityC DeadEnd 100.0 250.0
+Node RN1
+Node RN2
+Node RN3
+Node RN4
+Node RN5
+Node RN6
+Node RN7
+Node RN8
+Rail CityA RN1   12.0 200.0
+Rail RN1   RN2   15.5 200.0
+Rail RN2   CityB 10.0 200.0
+Rail RN2   RN3    8.0 150.0
+Rail RN3   CityC 20.0 150.0
+Rail RN1   RN4   25.0 250.0
+Rail RN4   CityD 18.0 250.0
+Rail RN3   RN5   22.0 180.0
+Rail RN5   CityE 16.0 180.0
+Rail RN4   RN6   12.0 200.0
+Rail RN6   RN5    9.0 200.0
+Rail RN5   CityF 30.0 200.0
+Rail RN6   CityF 28.0 200.0
+Rail CityB CityD 35.0 220.0
+Rail CityC CityE 40.0 220.0
+Rail CityD CityF 45.0 200.0
+Rail CityE RN7   13.0 180.0
+Rail RN7   RN8   14.0 180.0
+Rail RN8   CityB 17.0 180.0

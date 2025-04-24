@@ -14,23 +14,26 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
-
-    std::cout << "Rail network and train composition parsed successfully." << std::endl;
-    std::cout << "---------- Train ----------" << std::endl;
-    TrainCollection::getInstance().print();
-    std::cout << "---------- Rail Segment ----------" << std::endl;
-    RailCollection::getInstance().print();
-    std::cout << "---------- Node ----------" << std::endl;
-    NodeCollection::getInstance().print();
-
+    
     for (const auto& train : TrainCollection::getInstance().getElements()) {
         Simulation::getInstance().attach(train);
-        train->requestRoute();
     }
-
-    while (true) {
-        Simulation::getInstance().notify(Time(0, 1, 0));
+    
+    const Time& globalTime = Simulation::getInstance().getGlobalTime();
+    
+    while (globalTime.toFloat() < 24 * 3600) {
+        Simulation::getInstance().update(Time(0, 0, 1));
+        // std::cout << "---------- Rail Segment ----------" << std::endl;
+        // RailCollection::getInstance().print();
     }
+    
+    // std::cout << "Rail network and train composition parsed successfully." << std::endl;
+    // std::cout << "---------- Train ----------" << std::endl;
+    // TrainCollection::getInstance().print();
+    // std::cout << "---------- Rail Segment ----------" << std::endl;
+    // RailCollection::getInstance().print();
+    // std::cout << "---------- Node ----------" << std::endl;
+    // NodeCollection::getInstance().print();
 
     return EXIT_SUCCESS;
 }

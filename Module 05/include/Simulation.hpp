@@ -6,6 +6,7 @@
 #include "RailwayCollection.hpp"
 #include "Pathfinding.hpp"
 #include "Train.hpp"
+#include "Utils.hpp"
 
 #include <fstream>
 #include <stdexcept>
@@ -13,10 +14,13 @@
 
 class Simulation : public Singleton<Simulation>, public Subject {
 private:
-
+    Time globalTime = Time(0, 0, 0);
 public:
     Simulation() = default;
     ~Simulation() = default;
+
+    const Time& getGlobalTime() const { return globalTime; }
+    void setGlobalTime(const Time& time) { globalTime = time; }
 
     static void parseRailNetwork(const std::string& filePath) {
         std::ifstream file(filePath);
@@ -74,5 +78,10 @@ public:
 
     const std::list<LinkablePart*> calculateRoute(Train* train) const {
         return Pathfinding().dijkstra(train);
+    }
+
+    void update(const Time& time) {
+        globalTime += time;
+        notify(time);
     }
 };

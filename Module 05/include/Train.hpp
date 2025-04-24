@@ -6,11 +6,12 @@
 #include <algorithm>
 #include <iostream>
 
-#include "Utils.hpp"
+#include "Time.hpp"
 #include "Observer.hpp"
 #include "RailwayCollection.hpp"
 #include "LinkablePart.hpp"
 #include "Node.hpp"
+#include "Rail.hpp"
 
 class Identity {
 private:
@@ -114,9 +115,11 @@ enum class TrainStateType {
     Stop
 };
 
+std::ostream& operator<<(std::ostream& os, TrainStateType state);
+
 class TrainState {
 private:
-    TrainStateType stateType = TrainStateType::ConstantSpeed;
+    TrainStateType stateType = TrainStateType::Stop;
     LinkablePart* currentPart;
     float speed = 0.0f; // Initial speed in m/s
     float distanceOnSegment = 0.0f;
@@ -171,9 +174,18 @@ public:
     float getDistanceOnSegment() const { return state.getDistance(); }
     float getSpeed() const { return state.getSpeed(); }
     TrainStateType getStateType() const { return state.getStateType(); }
+    std::ostringstream getLog() const;
 
     void setCountdown(const Time& newCountdown) { schedule.setCountdown(newCountdown); }
-    void setCurrentPart(LinkablePart* part) { state.setSegment(part); }
+    void setCurrentPart(LinkablePart* part) {
+        if (Rail* rail = dynamic_cast<Rail*>(getCurrentPart())) {
+            rail->removeTrain(this);
+        }
+        state.setSegment(part);
+        if (Rail* rail = dynamic_cast<Rail*>(part)) {
+            rail->addTrain(this);
+        }
+    }
     void setSpeed(float newSpeed) { state.setSpeed(newSpeed); }
     void setDistanceOnSegment(float distance) { state.setDistance(distance); }
     void setRoute(const std::list<LinkablePart*>& newRoute) { route.setRoute(newRoute); }

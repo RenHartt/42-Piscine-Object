@@ -51,47 +51,79 @@ void Train::travelOnRail(const Time& time) {
         setDistanceOnSegment(distancetravelled);
     }
 
-    std::cout << "Train " << getName() << " is on rail segment " << rail->getId()
-            << " with distance: " << getDistanceOnSegment() / 1000
-            << " and speed: " << getSpeed() / (5.0f / 18.0f) << std::endl;
-
     if (getDistanceOnSegment() >= rail->getLength() - 0.001f) {
+        state.setStateType(TrainStateType::Stop);
+        setSpeed(0.0f);
+        std::cout << getLog().str() << std::endl;
         setCountdown(getStopDuration());
         setDistanceOnSegment(0.0f);
-        setSpeed(0.0f);
         setCurrentPart(getNextPart());
+    } else {
+        std::cout << getLog().str() << std::endl;
     }
 }
 
 void Train::travelOnNode(const Time& time) {
-    const Node* node = dynamic_cast<const Node*>(state.getCurrentPart());
     setCountdown(getCountdown() - time);
-    
-    std::cout << "Train " << getName() << " is at node " << node->getName() << " with countdown: " << getCountdown().toString() << std::endl;
-    
     if (getCountdown().toFloat() <= 0) {
-        setCountdown(getStopDuration());
-        setCurrentPart(getNextPart());
         requestRoute();
+        setCurrentPart(getNextPart());
+        setCountdown(getStopDuration());
+        setDistanceOnSegment(0.0f);
+        setSpeed(0.0f);
+    } else {
+        setCountdown(Time(0, 0, 1));
     }
 }
 
 void Train::travel(const Time& time) {
-    if (getCurrentPart() == nullptr) {
-        throw std::runtime_error("Train is not on a segment");
-    }
-
-    const Rail* rail = dynamic_cast<const Rail*>(getCurrentPart());
-    if (rail != nullptr) {
+    if (dynamic_cast<Rail*>(getCurrentPart())) {
         travelOnRail(time);
-    } else {
+    } else if (dynamic_cast<Node*>(getCurrentPart())) {
         travelOnNode(time);
     }
 }
 
 void Train::update(const Time& time) {
-    if (getCurrentPart() == nullptr) {
-        return;
+    const Time& globalTime = Simulation::getInstance().getGlobalTime();
+    if (globalTime.toFloat() < getDepartureTime().toFloat()) return;
+    if (getRoute().empty()) {
+        requestRoute();
+        if (getRoute().empty()) return;
+        setCurrentPart(getNextPart());
+    } else {
+        travel(time);
     }
-    travel(time);
+}
+
+std::ostringstream Train::getLog() const {
+    if (Rail* rail = dynamic_cast<Rail*>(getCurrentPart())) {
+        std::ostringstream oss;
+        Time globalTime = Simulation::getInstance().getGlobalTime();
+        std::string name = "[" + getName() + "]";
+        std::string departure = "[" + rail->getDeparture()->getName() + "]";
+        std::string arrival = "[" + rail->getArrival()->getName() + "]";
+        std::string distance = "[" + std::to_string((rail->getLength() - getDistanceOnSegment()) / 1000) + "]";
+        TrainStateType status = getStateType();
+        std::string position;
+        for (int i = 0; i <= (int)rail->getLength() / 1000; ++i) {
+            (i == (int)getDistanceOnSegment() / 1000) ? position += "[x]" : position += "[ ]";
+        }
+        oss << globalTime << " - " << name << " - " << departure << arrival << " - "
+            << distance << " - " << status << " - " << position;
+        return oss;
+    } else {
+        throw std::runtime_error("Train is not on a segment");
+    }
+   
+}
+
+std::ostream& operator<<(std::ostream& os, TrainStateType state) {
+    switch (state) {
+        case TrainStateType::Accelerate: os << "[Speed up]"; break;
+        case TrainStateType::ConstantSpeed: os << "[Maintain]"; break;
+        case TrainStateType::Decelerate: os << "[ Braking]"; break;
+        case TrainStateType::Stop: os << "[ Stopped]"; break;
+    }
+    return os;
 }

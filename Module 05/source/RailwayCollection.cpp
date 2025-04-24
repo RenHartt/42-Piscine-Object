@@ -32,6 +32,11 @@ void RailCollection::printItem(Rail* item) const {
     std::cout << "Id: " << item->getId() << ", Departure: " << item->getDeparture()->getName()
                 << ", Arrival: " << item->getArrival()->getName() << std::endl;
     std::cout << "Length: " << item->getLength() / 1000 << ", Speed Limit: " << item->getSpeedLimit() / (5.0f / 18.0f) << std::endl;
+    std::cout << "Connected Trains: ";
+    for (const auto& train : item->getTrainsOnSegment()) {
+        std::cout << train->getId() << " ";
+    }
+    std::cout << std::endl;
 }
 
 NodeCollection::~NodeCollection() {
