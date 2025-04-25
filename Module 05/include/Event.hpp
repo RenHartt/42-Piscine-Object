@@ -3,8 +3,8 @@
 #include <set>
 
 enum class RailEventType {
-    StationClose,
-    RailClose
+    RailClose,
+    RailOpen
 };
 
 class RailEventListener {
@@ -14,16 +14,40 @@ public:
 };
 
 class RailEventSource {
-private:
-    std::set<RailEventListener*> observers;
 protected:
-    void notifyObservers(RailEventType eventType) {
-        for (auto observer : observers) {
+    std::set<RailEventListener*> railObservers;
+public:
+    virtual ~RailEventSource() = default;
+    void addRailObserver(RailEventListener* railobserver) { railObservers.insert(railobserver); }
+    void removeRailObserver(RailEventListener* railobserver) { railObservers.erase(railobserver); }
+    void notifyRailObservers(RailEventType eventType) {
+        for (auto observer : railObservers) {
             observer->onRailEvent(eventType);
         }
     }
+};
+
+enum class NodeEventType {
+    NodeClose,
+    NodeOpen
+};
+
+class NodeEventListener {
 public:
-    virtual ~RailEventSource() = default;
-    void addObserver(RailEventListener* observer) { observers.insert(observer); }
-    void removeObserver(RailEventListener* observer) { observers.erase(observer); }
+    virtual ~NodeEventListener() = default;
+    virtual void onNodeEvent(NodeEventType eventType) = 0;
+};
+
+class NodeEventSource {
+protected:
+    std::set<NodeEventListener*> nodeObservers;
+public:
+    virtual ~NodeEventSource() = default;
+    void addNodeObserver(NodeEventListener* nodeobserver) { nodeObservers.insert(nodeobserver); }
+    void removeNodeObserver(NodeEventListener* nodeobserver) { nodeObservers.erase(nodeobserver); }
+    void notifyNodeObservers(NodeEventType eventType) {
+        for (auto observer : nodeObservers) {
+            observer->onNodeEvent(eventType);
+        }
+    }
 };

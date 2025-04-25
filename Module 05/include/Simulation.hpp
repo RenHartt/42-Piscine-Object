@@ -12,7 +12,8 @@
 #include <stdexcept>
 #include <sstream>
 
-class Simulation : public Singleton<Simulation>, public Subject {
+class Simulation :
+    public Singleton<Simulation>, public Subject {
 private:
     Time globalTime = Time(0, 0, 0);
 public:

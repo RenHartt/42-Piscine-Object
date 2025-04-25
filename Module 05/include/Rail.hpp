@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <stdexcept>
 
-class Rail : public LinkablePart, public RailEventSource {
+class Rail : public LinkablePart, public RailEventListener {
 private:
     inline static long long nextId = 1;
     long long id;
@@ -51,12 +51,13 @@ public:
     const std::unordered_set<Train*>& getTrainsOnSegment() const { return trainOnSegment; }
     void clearTrainsOnSegment() { trainOnSegment.clear(); }
     bool isSegmentEmpty() const { return trainOnSegment.empty(); }
-    void close() {
-        isClosed = true;
-        notifyObservers(RailEventType::RailClose);
-    }
-    void open() {
-        isClosed = false;
-        notifyObservers(RailEventType::RailClose);
+    void onRailEvent(RailEventType eventType) override {
+        if (eventType == RailEventType::RailClose) {
+            isClosed = true;
+            // std::cout << "Rail " << id << " is closed." << std::endl;
+        } else if (eventType == RailEventType::RailOpen) {
+            isClosed = false;
+            // std::cout << "Rail " << id << " is open." << std::endl;
+        }
     }
 };

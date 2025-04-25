@@ -1,12 +1,14 @@
 #include <iostream>
 
 #include "Simulation.hpp"
+#include "RandomEvent.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " <rail_network_file> <train_composition_file>" << std::endl;
         return EXIT_FAILURE;
     }
+
     try {
         Simulation::parseRailNetwork(argv[1]);
         Simulation::parseTrainComposition(argv[2]);
@@ -14,26 +16,22 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
+
+    RandomEvent randomEvent;
+    Simulation& sim = Simulation::getInstance();
+    TrainCollection& trains = TrainCollection::getInstance();
+    RailCollection& rails = RailCollection::getInstance();
+    NodeCollection& nodes = NodeCollection::getInstance();
+    const Time& globalTime = sim.getGlobalTime();
     
-    for (const auto& train : TrainCollection::getInstance().getElements()) {
-        Simulation::getInstance().attach(train);
-    }
-    
-    const Time& globalTime = Simulation::getInstance().getGlobalTime();
-    
+    for (const auto& train : trains.getElements()) sim.attach(train);
+    for (const auto& rail : rails.getElements()) randomEvent.addRailObserver(rail);
+    for (const auto& node : nodes.getElements()) randomEvent.addNodeObserver(node);
+
     while (globalTime.toFloat() < 24 * 3600) {
-        Simulation::getInstance().update(Time(0, 0, 1));
-        // std::cout << "---------- Rail Segment ----------" << std::endl;
-        // RailCollection::getInstance().print();
+        randomEvent.randomEvent(10.f);
+        sim.update(Time(0, 0, 1));
     }
-    
-    // std::cout << "Rail network and train composition parsed successfully." << std::endl;
-    // std::cout << "---------- Train ----------" << std::endl;
-    // TrainCollection::getInstance().print();
-    // std::cout << "---------- Rail Segment ----------" << std::endl;
-    // RailCollection::getInstance().print();
-    // std::cout << "---------- Node ----------" << std::endl;
-    // NodeCollection::getInstance().print();
 
     return EXIT_SUCCESS;
 }

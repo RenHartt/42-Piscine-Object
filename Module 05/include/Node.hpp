@@ -7,12 +7,12 @@
 #include "Utils.hpp"
 #include "LinkablePart.hpp"
 #include "RailwayCollection.hpp"
+#include "Event.hpp"
 
-class Rail;
-
-class Node : public LinkablePart {
+class Node : public LinkablePart, public NodeEventListener {
 private:
     std::string name;
+    bool isClosed = false;
 public:
     Node(const std::string& name) : name(name) {
         if (name.empty()) {
@@ -23,4 +23,13 @@ public:
 
     const std::string& getName() const { return name; }
     std::unordered_set<Rail*> getConnectedRails() const { return castToSet<Rail>(connectedParts); }
+    void onNodeEvent(NodeEventType eventType) override {
+        if (eventType == NodeEventType::NodeClose) {
+            isClosed = true;
+            // std::cout << "Node " << name << " is closed." << std::endl;
+        } else if (eventType == NodeEventType::NodeOpen) {
+            isClosed = false;
+            // std::cout << "Node " << name << " is open." << std::endl;
+        }
+    }
 };
