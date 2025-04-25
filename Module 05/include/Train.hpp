@@ -31,13 +31,13 @@ public:
 
 class Specification {
 private:
-    float weightTonnes; // Poids en tonnes
-    float frictionCoefficient; // Coefficient de friction
-    float accelerationForce; // Force d'accélération en kN
-    float brakingForce; // Force de freinage en kN
-    float accelerationCoefficient; // Coefficient d'accélération (m/s²)
-    float brakingCoefficient; // Coefficient de décélération (m/s²)
-    float gravity = 9.81f; // Accélération due à la gravité (m/s²)
+    float weightTonnes;
+    float frictionCoefficient;
+    float accelerationForce;
+    float brakingForce;
+    float accelerationCoefficient;
+    float brakingCoefficient;
+    float gravity = 9.81f;
 
 public:
     Specification(float weightTonnes, float frictionCoefficient, float accelerationForce, float brakingForce)
