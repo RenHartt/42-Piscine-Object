@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 
 #include "Time.hpp"
 #include "Observer.hpp"
@@ -141,6 +143,35 @@ public:
     void setDistance(float distance) { distanceOnSegment = distance; }
 };
 
+class FileLogger {
+private:
+    std::string folder = "logs";
+    std::fstream logFile;
+public:
+    FileLogger(const std::string& filename) {
+        if (!std::filesystem::exists(folder)) {
+            std::filesystem::create_directory(folder);
+        }
+        std::string fullPath = folder + "/" + filename;
+        logFile.open(fullPath, std::ios::out | std::ios::app);
+        if (!logFile.is_open()) {
+            throw std::runtime_error("Failed to open log file");
+        }
+    }
+
+    ~FileLogger() {
+        if (logFile.is_open()) {
+            logFile.close();
+        }
+    }
+
+    void write(const std::string& message) {
+        if (logFile.is_open()) {
+            logFile << message << std::endl;
+        }
+    }
+};
+
 class Train : public Observer {
 private:
     Identity identity;
@@ -148,13 +179,15 @@ private:
     Route route;
     Schedule schedule;
     TrainState state;
+    FileLogger logger;
 public:
     Train(const std::string& name, float weight, float frictionCoefficient, float accelerationForce, float brakingForce,
           Node* departure, Node* arrival, const Time& departureTime, const Time& stopDuration)
         : identity(name), specification(weight, frictionCoefficient, accelerationForce, brakingForce),
-          route(departure, arrival), schedule(departureTime, stopDuration), state(departure) {
+          route(departure, arrival), schedule(departureTime, stopDuration), state(departure), 
+          logger(name + "_" + departureTime.toString() + ".result") {
             TrainCollection::getInstance().add(this);
-          }
+    }
 
     long long getId() const { return identity.getId(); }
     const std::string& getName() const { return identity.getName(); }
@@ -174,7 +207,7 @@ public:
     float getDistanceOnSegment() const { return state.getDistance(); }
     float getSpeed() const { return state.getSpeed(); }
     TrainStateType getStateType() const { return state.getStateType(); }
-    std::ostringstream getLog() const;
+    void log();
 
     void setCountdown(const Time& newCountdown) { schedule.setCountdown(newCountdown); }
     void setCurrentPart(LinkablePart* part) {

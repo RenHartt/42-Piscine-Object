@@ -54,12 +54,12 @@ void Train::travelOnRail(const Time& time) {
     if (getDistanceOnSegment() >= rail->getLength() - 0.001f) {
         state.setStateType(TrainStateType::Stop);
         setSpeed(0.0f);
-        std::cout << getLog().str() << std::endl;
+        log();
         setCountdown(getStopDuration());
         setDistanceOnSegment(0.0f);
         setCurrentPart(getNextPart());
     } else {
-        std::cout << getLog().str() << std::endl;
+        log();
     }
 }
 
@@ -96,7 +96,7 @@ void Train::update(const Time& time) {
     }
 }
 
-std::ostringstream Train::getLog() const {
+void Train::log() {
     if (Rail* rail = dynamic_cast<Rail*>(getCurrentPart())) {
         std::ostringstream oss;
         Time globalTime = Simulation::getInstance().getGlobalTime();
@@ -111,7 +111,7 @@ std::ostringstream Train::getLog() const {
         }
         oss << globalTime << " - " << name << " - " << departure << arrival << " - "
             << distance << " - " << status << " - " << position;
-        return oss;
+        logger.write(oss.str());
     } else {
         throw std::runtime_error("Train is not on a segment");
     }
