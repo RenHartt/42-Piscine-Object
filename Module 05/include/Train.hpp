@@ -123,7 +123,7 @@ class TrainState {
 private:
     TrainStateType stateType = TrainStateType::Stop;
     LinkablePart* currentPart;
-    float speed = 0.0f; // Initial speed in m/s
+    float speed = 0.0f;
     float distanceOnSegment = 0.0f;
     bool travelFinished = false;
 public:

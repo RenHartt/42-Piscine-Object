@@ -1,8 +1,2 @@
 TrainAB  80  0.05  400.0  50.0   CityA CityB 08h00 00h05
-TrainBF 100  0.04  500.0  60.0   CityB CityF 08h15 00h07
-TrainCD  70  0.06  350.0  45.0   CityC CityD 08h30 00h08
-TrainEA  90  0.05  420.0  55.0   CityE CityA 08h45 00h06
-TrainFC  60  0.05  380.0  50.0   CityF CityC 09h00 00h05
-TrainAF 120  0.04  450.0  60.0   CityA CityF 09h15 00h10
-TrainDE  85  0.05  360.0  50.0   CityD CityE 09h30 00h05
-TrainEB  75  0.05  370.0  45.0   CityE CityB 09h45 00h04
+TrainBA  80  0.05  400.0  50.0   CityB CityA 08h00 00h05
