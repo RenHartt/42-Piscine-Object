@@ -55,9 +55,26 @@ const Time& Time::operator=(const Time& other) {
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const Time& time) {
-    os << "[" << (time.hours.count() < 10 ? "0" : "") << time.hours.count() << ":"
-       << (time.minutes.count() < 10 ? "0" : "") << time.minutes.count() << ":"
-       << (time.seconds.count() < 10 ? "0" : "") << time.seconds.count() << "]";
-    return os;
+bool Time::operator<(const Time& other) const {
+    return this->toFloat() < other.toFloat();
+}
+
+bool Time::operator>(const Time& other) const {
+    return this->toFloat() > other.toFloat();
+}
+
+bool Time::operator<=(const Time& other) const {
+    return this->toFloat() <= other.toFloat();
+}
+
+bool Time::operator>=(const Time& other) const {
+    return this->toFloat() >= other.toFloat();
+}
+
+bool Time::operator==(const Time& other) const {
+    return this->toFloat() == other.toFloat();
+}
+
+bool Time::operator!=(const Time& other) const {
+    return this->toFloat() != other.toFloat();
 }

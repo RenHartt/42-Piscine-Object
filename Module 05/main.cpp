@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     for (const auto& rail : rails.getElements()) randomEvent.addRailObserver(rail);
     for (const auto& node : nodes.getElements()) randomEvent.addNodeObserver(node);
 
-    while (globalTime.toFloat() < 24 * 3600) {
+    while (globalTime < Time(24, 0, 0)) {
         randomEvent.randomEvent(10.f);
         sim.update(Time(0, 0, 1));
     }

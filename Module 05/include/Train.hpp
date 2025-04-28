@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 
 #include "Time.hpp"
 #include "Observer.hpp"
@@ -75,6 +74,7 @@ private:
     Node* departure;
     Node* arrival;
     std::list<LinkablePart*> route;
+    Time travelTime;
 public:
     Route(Node* departure, Node* arrival) : departure(departure), arrival(arrival) {
         if (departure == nullptr || arrival == nullptr) {
@@ -85,7 +85,9 @@ public:
     Node* getDeparture() const { return departure; }
     Node* getArrival() const { return arrival; }
     const std::list<LinkablePart*>& getRoute() const { return route; }
+    const Time& getTravelTime() const { return travelTime; }
     void setRoute(const std::list<LinkablePart*>& newRoute) { route = newRoute; }
+    void setTravelTime(const Time& time) { travelTime = time; }
 };
 
 class Schedule {
@@ -117,14 +119,13 @@ enum class TrainStateType {
     Stop
 };
 
-std::ostream& operator<<(std::ostream& os, TrainStateType state);
-
 class TrainState {
 private:
     TrainStateType stateType = TrainStateType::Stop;
     LinkablePart* currentPart;
     float speed = 0.0f; // Initial speed in m/s
     float distanceOnSegment = 0.0f;
+    bool travelFinished = false;
 public:
     TrainState(LinkablePart* part) : currentPart(part) {
         if (part == nullptr) {
@@ -136,23 +137,22 @@ public:
     LinkablePart* getCurrentPart() const { return currentPart; }
     float getSpeed() const { return speed; }
     float getDistance() const { return distanceOnSegment; }
+    bool getTravelFinished() const { return travelFinished; }
 
     void setStateType(TrainStateType newState) { stateType = newState; }
     void setSegment(LinkablePart* part) { currentPart = part; }
     void setSpeed(float newSpeed) { speed = newSpeed; }
     void setDistance(float distance) { distanceOnSegment = distance; }
+    void setTravelFinished(bool finished) { travelFinished = finished; }
 };
 
 class FileLogger {
 private:
     std::string folder = "logs";
     std::fstream logFile;
+    std::string fullPath;
 public:
-    FileLogger(const std::string& filename) {
-        if (!std::filesystem::exists(folder)) {
-            std::filesystem::create_directory(folder);
-        }
-        std::string fullPath = folder + "/" + filename;
+    FileLogger(const std::string& filename): fullPath(folder + "/" + filename) {
         logFile.open(fullPath, std::ios::out | std::ios::app);
         if (!logFile.is_open()) {
             throw std::runtime_error("Failed to open log file");
@@ -160,15 +160,30 @@ public:
     }
 
     ~FileLogger() {
-        if (logFile.is_open()) {
+        if (!logFile.is_open()) {
             logFile.close();
         }
     }
+
+    const std::string& getFullPath() const { return fullPath; }
+    const std::string& getFolder() const { return folder; }
 
     void write(const std::string& message) {
         if (logFile.is_open()) {
             logFile << message << std::endl;
         }
+    }
+
+    void writeHeader(const std::string& message) {
+        if (logFile.is_open()) {
+            logFile.close();
+        }
+        logFile.open(fullPath, std::ios::in | std::ios::out);
+        std::stringstream buffer;
+        buffer << logFile.rdbuf();
+        logFile.seekp(0, std::ios::beg);
+        logFile << message << std::endl;
+        logFile << buffer.str();
     }
 };
 
@@ -207,8 +222,11 @@ public:
     float getDistanceOnSegment() const { return state.getDistance(); }
     float getSpeed() const { return state.getSpeed(); }
     TrainStateType getStateType() const { return state.getStateType(); }
+    bool isTravelFinished() const { return state.getTravelFinished(); }
+    const Time& getTravelTime() const { return route.getTravelTime(); }
     void log();
-
+    
+    void setTravelFinished(bool finished) { state.setTravelFinished(finished); }
     void setCountdown(const Time& newCountdown) { schedule.setCountdown(newCountdown); }
     void setCurrentPart(LinkablePart* part) {
         if (Rail* rail = dynamic_cast<Rail*>(getCurrentPart())) {
@@ -222,6 +240,7 @@ public:
     void setSpeed(float newSpeed) { state.setSpeed(newSpeed); }
     void setDistanceOnSegment(float distance) { state.setDistance(distance); }
     void setRoute(const std::list<LinkablePart*>& newRoute) { route.setRoute(newRoute); }
+    void setTravelTime(const Time& time) { route.setTravelTime(time); }
 
     float calculateBrakingDistance() const {
         float velocity = state.getSpeed();

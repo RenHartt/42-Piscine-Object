@@ -36,6 +36,10 @@ struct Time {
     const Time& operator+=(const Time& other);
     const Time& operator-=(const Time& other);
     const Time& operator=(const Time& other);
+    bool operator<(const Time& other) const;
+    bool operator>(const Time& other) const;
+    bool operator<=(const Time& other) const;
+    bool operator>=(const Time& other) const;
+    bool operator==(const Time& other) const;
+    bool operator!=(const Time& other) const;
 };
-
-std::ostream& operator<<(std::ostream& os, const Time& time);

@@ -54,10 +54,8 @@ public:
     void onRailEvent(RailEventType eventType) override {
         if (eventType == RailEventType::RailClose) {
             isClosed = true;
-            // std::cout << "Rail " << id << " is closed." << std::endl;
         } else if (eventType == RailEventType::RailOpen) {
             isClosed = false;
-            // std::cout << "Rail " << id << " is open." << std::endl;
         }
     }
 };

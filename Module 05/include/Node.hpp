@@ -26,10 +26,8 @@ public:
     void onNodeEvent(NodeEventType eventType) override {
         if (eventType == NodeEventType::NodeClose) {
             isClosed = true;
-            // std::cout << "Node " << name << " is closed." << std::endl;
         } else if (eventType == NodeEventType::NodeOpen) {
             isClosed = false;
-            // std::cout << "Node " << name << " is open." << std::endl;
         }
     }
 };

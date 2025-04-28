@@ -5,6 +5,7 @@
 #include "Node.hpp"
 #include "Utils.hpp"
 #include "Event.hpp"
+#include "IO.hpp"
 
 void Train::requestRoute() {
     setRoute(Simulation::getInstance().calculateRoute(this));
@@ -64,6 +65,13 @@ void Train::travelOnRail(const Time& time) {
 }
 
 void Train::travelOnNode(const Time& time) {
+    if (getCurrentPart() == getArrival()) {
+        setTravelTime(Simulation::getInstance().getGlobalTime() - getDepartureTime());
+        setTravelFinished(true);
+        logger.writeHeader("Final travel time : " + getTravelTime().toString());
+        logger.writeHeader("Train : " + getName());
+        return;
+    }
     setCountdown(getCountdown() - time);
     if (getCountdown().toFloat() <= 0) {
         requestRoute();
@@ -85,15 +93,16 @@ void Train::travel(const Time& time) {
 }
 
 void Train::update(const Time& time) {
-    const Time& globalTime = Simulation::getInstance().getGlobalTime();
-    if (globalTime.toFloat() < getDepartureTime().toFloat()) return;
-    if (getRoute().empty()) {
-        requestRoute();
-        if (getRoute().empty()) return;
-        setCurrentPart(getNextPart());
-    } else {
-        travel(time);
-    }
+    if (isTravelFinished()) return;
+        const Time& globalTime = Simulation::getInstance().getGlobalTime();
+        if (globalTime.toFloat() < getDepartureTime().toFloat()) return;
+        if (getRoute().empty()) {
+            requestRoute();
+            if (getRoute().empty()) return;
+            setCurrentPart(getNextPart());
+        } else {
+            travel(time);
+        }
 }
 
 void Train::log() {
@@ -116,14 +125,4 @@ void Train::log() {
         throw std::runtime_error("Train is not on a segment");
     }
    
-}
-
-std::ostream& operator<<(std::ostream& os, TrainStateType state) {
-    switch (state) {
-        case TrainStateType::Accelerate: os << "[Speed up]"; break;
-        case TrainStateType::ConstantSpeed: os << "[Maintain]"; break;
-        case TrainStateType::Decelerate: os << "[ Braking]"; break;
-        case TrainStateType::Stop: os << "[ Stopped]"; break;
-    }
-    return os;
 }
