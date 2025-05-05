@@ -1,0 +1,11 @@
+Node A
+Node B
+Node C
+Node D
+Node E
+Rail A B 8.0  80.0
+Rail B C 8.0  80.0
+Rail C D 8.0  80.0
+Rail D A 8.0  80.0
+Rail B E 5.0  60.0
+Rail E C 5.0  60.0

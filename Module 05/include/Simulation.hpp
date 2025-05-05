@@ -39,12 +39,15 @@ public:
                 Factory::getInstance().createNode(name);
             } else if (type == "Rail") {
                 std::string departureName, arrivalName;
-                float length, speedLimit;
+                float length = 0, speedLimit = 0;
                 iss >> departureName >> arrivalName >> length >> speedLimit;
                 Node* departure = NodeCollection::getInstance().getByName(departureName);
                 Node* arrival = NodeCollection::getInstance().getByName(arrivalName);
                 if (!departure || !arrival) {
                     throw std::runtime_error("Invalid node names: " + departureName + ", " + arrivalName);
+                }
+                if (!length || !speedLimit) {
+                    throw std::runtime_error("Invalid length or speed limit: " + std::to_string(length) + ", " + std::to_string(speedLimit));
                 }
                 Factory::getInstance().createRail(departure, arrival, length * 1000, speedLimit * (5./18.));
             } else {

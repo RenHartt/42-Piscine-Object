@@ -2,7 +2,8 @@
 
 std::string Time::toString() const {
     std::ostringstream oss;
-    oss << hours.count() << ":" << minutes.count() << ":" << seconds.count();
+    oss << (hours.count() < 10 ? "0" : "") << hours.count() << "h"
+        << (minutes.count() < 10 ? "0" : "") << minutes.count();
     return oss.str();
 }
 

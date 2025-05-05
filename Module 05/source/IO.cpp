@@ -1,9 +1,8 @@
 #include "IO.hpp"
 
 std::ostream& operator<<(std::ostream& os, const Time& time) {
-    os << "[" << (time.hours.count() < 10 ? "0" : "") << time.hours.count() << ":"
-       << (time.minutes.count() < 10 ? "0" : "") << time.minutes.count() << ":"
-       << (time.seconds.count() < 10 ? "0" : "") << time.seconds.count() << "]";
+    os << "[" << (time.hours.count() < 10 ? "0" : "") << time.hours.count() << "h"
+       << (time.minutes.count() < 10 ? "0" : "") << time.minutes.count() << "]";
     return os;
 }
 
